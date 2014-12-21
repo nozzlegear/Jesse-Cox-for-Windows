@@ -1,0 +1,141 @@
+﻿<Page
+    x:Name="pageRoot"
+    x:Class="Space_Butterfly.MainPage"
+    DataContext="{Binding Items, RelativeSource={RelativeSource Self}}"
+    d:DataContext="{Binding Items, Source={d:DesignData Source=/DataModel/SampleData.json, Type=data:SampleYTSource}}"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Space_Butterfly"
+    xmlns:data="using:Space_Butterfly.Data"
+    xmlns:common="using:Space_Butterfly.Common"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <local:DateConverter x:Key="DateConverter" />
+    </Page.Resources>
+
+    <!--
+         This grid acts as a root panel for the page that defines two rows:
+         * Row 0 contains the back button and page title
+         * Row 1 contains the rest of the page layout
+    -->
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.ChildrenTransitions>
+            <TransitionCollection>
+                <EntranceThemeTransition/>
+            </TransitionCollection>
+        </Grid.ChildrenTransitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="140"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Horizontal scrolling grid -->
+        <GridView
+            x:Name="itemGridView"
+            AutomationProperties.AutomationId="ItemsGridView"
+            AutomationProperties.Name="Items"
+            TabIndex="1"
+            Grid.RowSpan="2"
+            Padding="116,136,116,46"
+            ItemsSource="{Binding}"
+            SelectionMode="None"
+            IsSwipeEnabled="false"
+            IsItemClickEnabled="True"
+            ItemClick="ItemView_ItemClick">
+            <GridView.ItemTemplate>
+                <DataTemplate>
+                    <Grid HorizontalAlignment="Left" Width="480" Height="360">
+                        <Border Background="{ThemeResource ListViewItemPlaceholderBackgroundThemeBrush}">
+                            <Image Source="{Binding thumbnail.hqDefault}" Stretch="UniformToFill" AutomationProperties.Name="{Binding title}"/>
+                        </Border>
+                        <StackPanel VerticalAlignment="Bottom" Background="{ThemeResource ListViewItemOverlayBackgroundThemeBrush}">
+                            <TextBlock Text="{Binding title}" Foreground="{ThemeResource ListViewItemOverlayForegroundThemeBrush}" Style="{StaticResource BaseTextBlockStyle}" Height="60" Margin="15,0,15,0" FontWeight="SemiBold"/>
+                            <TextBlock Foreground="{ThemeResource ListViewItemOverlaySecondaryForegroundThemeBrush}" Style="{StaticResource BaseTextBlockStyle}" TextWrapping="NoWrap" Margin="15,0,15,10" FontSize="12">
+                                <Run>Updated</Run>
+                                <Run Text="{Binding uploaded, Converter={StaticResource DateConverter}}"></Run>
+                            </TextBlock>
+                        </StackPanel>
+                    </Grid>
+                </DataTemplate>
+            </GridView.ItemTemplate>
+        </GridView>
+
+        <!-- Back button and page title -->
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="120"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <TextBlock x:Name="pageTitle" Text="{StaticResource AppName}" Style="{StaticResource HeaderTextBlockStyle}" Grid.Column="1" 
+                       IsHitTestVisible="false" TextWrapping="NoWrap" VerticalAlignment="Bottom" Margin="0,0,30,40"/>
+            <Grid Grid.Column="2"
+                  Margin="0, 25, 120, 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock x:Name="TwitchTextBlock"
+                           Margin="0, 0, 30, 0"
+                           Grid.Column="0"
+                           Style="{StaticResource SubheaderTextBlockStyle}"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Right"
+                           Visibility="Collapsed">
+                    <Hyperlink x:Name="TwitchLink" Foreground="{ThemeResource ApplicationHeaderForegroundThemeBrush}" Click="TwitchLink_Click"  >
+                        <Run>
+                            Live now on Twitch!
+                        </Run>
+                    </Hyperlink>
+                </TextBlock>
+                <Image x:Name="HeaderImage"  
+                       Grid.Column="1"
+                       Source="Assets/Cox/Cox7.png" 
+                       MaxHeight="100" 
+                       MaxWidth="175"
+                       HorizontalAlignment="Right" 
+                       VerticalAlignment="Center"
+                       Tapped="HeaderImage_Tapped"/>
+            </Grid>
+        </Grid>
+    </Grid>
+    <Page.BottomAppBar>
+        <CommandBar x:Name="BottomBar" Background="#432966">
+            <AppBarButton x:Name="RefreshButton" Label="Refresh" Icon="Refresh" Click="RefreshButton_Click" />
+            <AppBarButton x:Name="SettingsButton" Label="Settings" Icon="Setting" Click="SettingsButton_Click" />
+        </CommandBar>
+    </Page.BottomAppBar>
+    <Page.TopAppBar>
+        <CommandBar x:Name="TopBar" Background="#432966">
+            <AppBarButton x:Name="YouTubeButton" Label="YouTube" Click="YouTubeButton_Click"  Icon="Play" />
+            <AppBarButton x:Name="TwitterButton" Label="Twitter" Click="TwitterButton_Click">
+                <AppBarButton.Icon>
+                    <BitmapIcon UriSource="Assets/Icons/twitter_Icon.png"/>
+                </AppBarButton.Icon>
+            </AppBarButton>
+            <AppBarButton x:Name="FacebookButton" Label="Facebook" Click="FacebookButton_Click">
+                <AppBarButton.Icon>
+                    <BitmapIcon UriSource="Assets/Icons/facebook_Icon.png"/>
+                </AppBarButton.Icon>
+            </AppBarButton>
+            <AppBarButton x:Name="SoundCloudButton" Label="Soundcloud" Click="SoundCloudButton_Click">
+                <AppBarButton.Icon>
+                    <BitmapIcon UriSource="Assets/Icons/soundcloud_Icon.png"/>
+                </AppBarButton.Icon>
+            </AppBarButton>
+            <AppBarButton x:Name="RedditButton" Label="Reddit" Click="RedditButton_Click">
+                <AppBarButton.Icon>
+                    <BitmapIcon UriSource="Assets/Icons/reddit_Icon.png"/>
+                </AppBarButton.Icon>
+            </AppBarButton>
+            <AppBarButton x:Name="GameteeButton" Label="Gametee" Click="GameteeButton_Click">
+                <AppBarButton.Icon>
+                    <BitmapIcon UriSource="Assets/Icons/shirt_Icon.png"/>
+                </AppBarButton.Icon>
+            </AppBarButton>
+        </CommandBar>
+    </Page.TopAppBar>
+</Page>

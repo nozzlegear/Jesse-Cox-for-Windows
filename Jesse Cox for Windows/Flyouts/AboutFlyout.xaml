@@ -1,0 +1,71 @@
+﻿<SettingsFlyout
+    x:Class="Space_Butterfly.Flyouts.AboutFlyout"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Space_Butterfly.Flyouts"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    IconSource="Assets/SmallLogo.png"
+    Title="About"
+    d:DesignWidth="346">
+
+    <!-- This StackPanel acts as a root panel for vertical layout of the content sections -->
+    <StackPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch" >
+
+        <!-- The StackPanel(s) below define individual content sections -->
+
+        <!-- Content Section 1-->
+        <StackPanel Style="{StaticResource SettingsFlyoutSectionStyle}">
+
+            <!-- Section 1 header -->
+            <TextBlock Style="{StaticResource TitleTextBlockStyle}" Text="About this app" />
+
+            <!-- Section 1 body -->
+            <TextBlock Style="{StaticResource BodyTextBlockStyle}" Margin="0,0,0,25" TextWrapping="Wrap">
+                    This application was inspired by 
+                   <Hyperlink NavigateUri="https://chrome.google.com/webstore/detail/the-unofficial-jesse-cox/adlkpmmbilmffhbhcjookoeghgcaghfe">
+                       The Unofficial Jesse Cox Chrome Extension.
+                   </Hyperlink>
+                    It was not commissioned by Jesse Cox, and he is not responsible for bugs or feature requests.
+            </TextBlock>
+
+            <TextBlock Style="{StaticResource BodyTextBlockStyle}" Margin="0,0,0,25" TextWrapping="Wrap">
+                    This app was developed by Joshua Harms, an ASP.NET and Windows developer from Sibley, Iowa. Joshua writes and creates courses that help aspiring developers learn to build real, practical applications that businesses actually need.
+            </TextBlock>
+
+            <TextBlock Style="{StaticResource BodyTextBlockStyle}" Margin="0,0,0,25" TextWrapping="Wrap">
+                    You can read and watch these development courses at
+                <Hyperlink NavigateUri="https://asyncbuild.com/">asyncbuild.com, </Hyperlink>
+                or you can follow Joshua on Twitter at 
+                <Hyperlink NavigateUri="https://twitter.com/asyncwords">
+                    @asyncwords.
+                </Hyperlink>
+            </TextBlock>
+
+            <!-- Open Source Information -->
+            <TextBlock Style="{StaticResource TitleTextBlockStyle}" Text="Open Source" />
+
+            <TextBlock Style="{StaticResource BodyTextBlockStyle}" Margin="0,0,0,25" TextWrapping="Wrap">
+                This application is open source! You can browse the code, take a look at current bug reports, submit pull requests and even fork it on
+                <Hyperlink NavigateUri="https://github.com/asyncwords/jesse-cox-for-windows">
+                    GitHub.
+                </Hyperlink>
+            </TextBlock>
+
+            <!-- Feedback Information -->
+            <TextBlock Style="{StaticResource TitleTextBlockStyle}" Text="Feedback" />
+
+            <TextBlock Style="{StaticResource BodyTextBlockStyle}" Margin="0,0,0,25" TextWrapping="Wrap">
+                    Have a feature suggestion? Running into an annoying bug? Send an email to
+                    <Hyperlink NavigateUri="mailto:joshua@asyncbuild.com">
+                        joshua@asyncbuild.com.
+                    </Hyperlink>
+            </TextBlock>
+
+        </StackPanel>
+
+        <!-- Define more Content Sections below as necessary -->
+
+    </StackPanel>
+</SettingsFlyout>
