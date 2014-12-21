@@ -33,3 +33,4 @@ Specifically, the project makes use of the **[null propagating](https://roslyn.c
 4. Clean up the MainPage.xaml.cs file.
 5. Clean up the images in /Jesse Cox for Windows/Assets/Cox/ folder.
 6. Test on smaller devices.
+7. Add a Windows Phone app if there's enough demand (or if I don't have anything better to do).
