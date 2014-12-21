@@ -5,6 +5,8 @@ A lightweight XAML Windows app built in a day as an exercise in learning WinRT d
 
 This is a **BETA** release, there will likely be bugs. Additionally, this release has not yet been tested on devices with smaller screens, and there are expected to be display-related issues on these devices.
 
+[This is a video of the app in action.](https://www.youtube.com/watch?v=-iNRvat2QBA)
+
 =====================
 
 To build:
