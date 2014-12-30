@@ -125,7 +125,7 @@ namespace Background_Tasks
                         CreateAndShowToast(podcastCheck.Data.stream.channel?.video_banner, "The Co-Optional Podcast just went live on Twitch!", podcastCheck.Data.stream.channel.url);
 
                         //Save podcast stream id to prevent multiple notifications
-                        LocalSettings.Values["LastPodcastStreamId"] = lastPodcastStreamId;
+                        LocalSettings.Values["LastPodcastStreamId"] = podcastCheck.Data.stream._id;
                     }
                 }
             }
