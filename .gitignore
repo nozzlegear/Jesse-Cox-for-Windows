@@ -185,3 +185,4 @@ FakesAssemblies/
 
 # Windows Store files
 Package.StoreAssociation.xml
+BundleArtifacts/

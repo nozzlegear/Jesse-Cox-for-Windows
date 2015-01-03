@@ -1,4 +1,0 @@
-MainPackage=D:\Source\Space Butterfly\Space Butterfly\bin\Release\Space Butterfly_1.1.0.0_AnyCPU.appx
-SymbolPackage=D:\Source\Space Butterfly\Space Butterfly\AppPackages\Space Butterfly_1.1.0.0_Test\Space Butterfly_1.1.0.0_AnyCPU.appxsym
-ResourcePack=D:\Source\Space Butterfly\Space Butterfly\bin\Release\Space Butterfly_1.1.0.0_scale-140.appx
-ResourcePack=D:\Source\Space Butterfly\Space Butterfly\bin\Release\Space Butterfly_1.1.0.0_scale-180.appx

@@ -17,7 +17,8 @@
     <PackageCertificateKeyFile>Jesse Cox for Windows_TemporaryKey.pfx</PackageCertificateKeyFile>
     <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
     <AppxBundlePlatforms>neutral</AppxBundlePlatforms>
-    <PackageCertificateThumbprint>423A2F5725DC5D9DEDB3775B68AEA762F97963DA</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>1F4644F5E453FCE06166F8C5EE23BE57AEB916CC</PackageCertificateThumbprint>
+    <AppxBundle>Always</AppxBundle>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -135,7 +136,6 @@
       <SubType>Designer</SubType>
     </AppxManifest>
     <None Include="Jesse Cox for Windows_TemporaryKey.pfx" />
-    <None Include="Package.StoreAssociation.xml" />
     <None Include="packages.config" />
     <Content Include="Assets\BadgeLogo.scale-100.png" />
     <Content Include="Assets\BadgeLogo.scale-140.png" />
