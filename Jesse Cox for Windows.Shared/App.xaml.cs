@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 using Space_Butterfly.Common;
-using Space_Butterfly.Flyouts;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,7 +10,6 @@ using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.System;
-using Windows.UI.ApplicationSettings;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -19,6 +17,11 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+
+#if WINDOWS_APP
+using Space_Butterfly.Flyouts;
+using Windows.UI.ApplicationSettings;
+#endif
 
 // The Split App template is documented at http://go.microsoft.com/fwlink/?LinkId=234228
 
@@ -104,7 +107,7 @@ namespace Space_Butterfly
             {
                 var toastLauncher = JsonConvert.DeserializeObject<ButterflyCore.Models.ToastLaunch>(e.Arguments);
 
-                if(toastLauncher != null)
+                if (toastLauncher != null)
                 {
                     await Launcher.LaunchUriAsync(new Uri(toastLauncher.Url));
                 }
@@ -137,30 +140,33 @@ namespace Space_Butterfly
 
         protected override void OnWindowCreated(WindowCreatedEventArgs args)
         {
+#if WINDOWS_APP
             SettingsPane.GetForCurrentView().CommandsRequested += (s, e) =>
-            {
-                var generalCommand = new SettingsCommand("general", "General Settings", (handler) =>
-                {
-                    var flyout = new GeneralSettingsFlyout();
-                    flyout.Show();
-                });
+           {
+               var generalCommand = new SettingsCommand("general", "General Settings", (handler) =>
+               {
+                   var flyout = new GeneralSettingsFlyout();
+                   flyout.Show();
+               });
 
-                var aboutCommand = new SettingsCommand("about", "About", (handler) =>
-                {
-                    var flyout = new AboutFlyout();
-                    flyout.Show();
-                });
+               var aboutCommand = new SettingsCommand("about", "About", (handler) =>
+               {
+                   var flyout = new AboutFlyout();
+                   flyout.Show();
+               });
 
-                var policyCommand = new SettingsCommand("policy", "Privacy Policy", (handler) =>
-                {
-                    var flyout = new PrivacyPolicyFlyout();
-                    flyout.Show();
-                });
+               var policyCommand = new SettingsCommand("policy", "Privacy Policy", (handler) =>
+               {
+                   var flyout = new PrivacyPolicyFlyout();
+                   flyout.Show();
+               });
 
-                e.Request.ApplicationCommands.Add(generalCommand);
-                e.Request.ApplicationCommands.Add(aboutCommand);
-                e.Request.ApplicationCommands.Add(policyCommand);
-            };
+               e.Request.ApplicationCommands.Add(generalCommand);
+               e.Request.ApplicationCommands.Add(aboutCommand);
+               e.Request.ApplicationCommands.Add(policyCommand);
+           };
+
+#endif
 
             base.OnWindowCreated(args);
         }

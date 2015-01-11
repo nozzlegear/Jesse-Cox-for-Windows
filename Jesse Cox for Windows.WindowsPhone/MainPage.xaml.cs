@@ -68,7 +68,7 @@ namespace Space_Butterfly
                     TaskEntryPoint = "Background_Tasks.SourceCheckerTask"
                 };
 
-                taskBuilder.SetTrigger(new TimeTrigger(15, false));
+                taskBuilder.SetTrigger(new TimeTrigger(30, false));
                 taskBuilder.AddCondition(new SystemCondition(SystemConditionType.InternetAvailable));
 
                 //App needs to be added to lock screen to run background tasks. Request permission.
@@ -78,21 +78,6 @@ namespace Space_Butterfly
 
                 string breaker = null;
             }
-        }
-
-        #endregion 
-
-        #region Images
-
-        private void SetHeaderImage(string url = null)
-        {
-            var source = new Uri(string.IsNullOrEmpty(url) ? "ms-appx:///Assets/Cox/cox\{new Random().Next(1, 8)}.png" : url);
-
-            //Set image source
-            HeaderImage.Source = new BitmapImage(source);
-
-            //Show or hide textblock
-            TwitchTextBlock.Visibility = string.IsNullOrEmpty(url) ? Visibility.Collapsed : Visibility.Visible;
         }
 
         #endregion 
@@ -176,9 +161,8 @@ namespace Space_Butterfly
         {
             ShowPopup();
 
-            //Disable channel url and reset header image
+            //Disable channel url
             LiveChannelUrl = null;
-            SetHeaderImage();
 
             // Use ButterflyCore to load data
             var items = await core.GetYouTubeUploads();
@@ -223,7 +207,7 @@ namespace Space_Butterfly
                     if (twitchStatus.Data?.stream != null)
                     {
                         //The Cox is live
-                        SetHeaderImage(twitchStatus.Data?.stream.preview.medium);
+                        //SetHeaderImage(twitchStatus.Data?.stream.preview.medium);
                         LiveChannelUrl = new Uri(twitchStatus.Data.stream.channel.url);
                     }
                     else
@@ -240,7 +224,7 @@ namespace Space_Butterfly
                             if (coopStatus.Data?.stream != null && coopStatus.Data.stream.channel.status.ToLower().Contains("optional"))
                             {
                                 //Podcast is live
-                                SetHeaderImage(coopStatus.Data?.stream.preview.medium);
+                                //SetHeaderImage(coopStatus.Data?.stream.preview.medium);
                                 LiveChannelUrl = new Uri(coopStatus.Data.stream.channel.url);
                             }
                         }
@@ -259,46 +243,14 @@ namespace Space_Butterfly
         {
             CheckSources();
             BottomBar.IsOpen = false;
-            TopAppBar.IsOpen = false;
         }
 
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
-            var flyout = new GeneralSettingsFlyout();
-            flyout.Show();
+            //var flyout = new GeneralSettingsFlyout();
+            //flyout.Show();
 
             BottomBar.IsOpen = false;
-            TopAppBar.IsOpen = false;
-        }
-
-        private async void TwitterButton_Click(object sender, RoutedEventArgs e)
-        {
-            await Launcher.LaunchUriAsync(new Uri("https://twitter.com/jessecox"));
-        }
-
-        private async void YouTubeButton_Click(object sender, RoutedEventArgs e)
-        {
-            await Launcher.LaunchUriAsync(new Uri("https://www.youtube.com/user/OMFGcata"));
-        }
-
-        private async void FacebookButton_Click(object sender, RoutedEventArgs e)
-        {
-            await Launcher.LaunchUriAsync(new Uri("https://www.facebook.com/TheJesseCox"));
-        }
-
-        private async void SoundCloudButton_Click(object sender, RoutedEventArgs e)
-        {
-            await Launcher.LaunchUriAsync(new Uri("https://soundcloud.com/coxncrendor"));
-        }
-
-        private async void RedditButton_Click(object sender, RoutedEventArgs e)
-        {
-            await Launcher.LaunchUriAsync(new Uri("https://www.reddit.com/r/shaboozey"));
-        }
-
-        private async void GameteeButton_Click(object sender, RoutedEventArgs e)
-        {
-            await Launcher.LaunchUriAsync(new Uri("http://www.gametee.co.uk/category/jesse-cox"));
         }
 
         #endregion

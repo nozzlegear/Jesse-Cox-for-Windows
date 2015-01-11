@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>4269c3d7-9b4a-4f75-bc94-445188fe0ea7</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Space_Butterfly</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Common\NavigationHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\ObservableDictionary.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\RelayCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\SuspensionManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Custom Elements\ProgressOverlay.xaml.cs">
+      <DependentUpon>ProgressOverlay.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)DataModel\SampleYTSource.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)Assets\BadgeLogo.scale-100.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\BadgeLogo.scale-140.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\BadgeLogo.scale-180.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\BadgeLogo.scale-240.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Cox\cox1.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Cox\cox2.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Cox\cox3.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Cox\cox4.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Cox\cox5.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Cox\cox6.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Cox\cox7.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Cox\cox8.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Cox\live.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Icons\facebook_icon.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Icons\reddit_icon.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Icons\shirt_icon.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Icons\soundcloud_icon.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Icons\twitter_icon.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Logo.scale-100.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Logo.scale-140.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Logo.scale-180.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Logo.scale-80.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\MediumGray.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\moon-nectar.splash-100.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\moon-nectar.splash-140.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\moon-nectar.splash-180.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\SmallLogo.scale-100.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\SmallLogo.scale-140.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\SmallLogo.scale-180.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\SmallLogo.scale-80.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\SmallLogo.targetsize-16.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\SmallLogo.targetsize-256.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\SmallLogo.targetsize-32.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\SmallLogo.targetsize-48.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\SplashScreen.scale-100.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\SplashScreen.scale-140.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\SplashScreen.scale-180.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Square310x310Logo.scale-100.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Square310x310Logo.scale-140.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Square310x310Logo.scale-180.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Square310x310Logo.scale-80.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Square70x70Logo.scale-100.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Square70x70Logo.scale-140.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Square70x70Logo.scale-180.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Square70x70Logo.scale-80.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\StoreLogo.scale-100.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\StoreLogo.scale-140.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\StoreLogo.scale-180.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Wide310x150Logo.scale-100.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Wide310x150Logo.scale-140.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Wide310x150Logo.scale-180.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Wide310x150Logo.scale-80.png" />
+    <Content Include="$(MSBuildThisFileDirectory)DataModel\SampleData.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="$(MSBuildThisFileDirectory)Custom Elements\ProgressOverlay.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="$(MSBuildThisFileDirectory)App.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </ApplicationDefinition>
+  </ItemGroup>
+</Project>
