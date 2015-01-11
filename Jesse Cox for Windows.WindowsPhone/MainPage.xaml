@@ -32,39 +32,8 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-
-        <!-- Horizontal scrolling grid -->
-        <GridView Grid.Row="1"
-            x:Name="itemGridView"
-            AutomationProperties.AutomationId="ItemsGridView"
-            AutomationProperties.Name="Items"
-            TabIndex="1"
-            Grid.RowSpan="2"
-            Padding="19, 0"
-            ItemsSource="{Binding}"
-            SelectionMode="None"
-            IsSwipeEnabled="false"
-            IsItemClickEnabled="True"
-            ItemClick="ItemView_ItemClick">
-            <GridView.ItemTemplate>
-                <DataTemplate>
-                    <Grid Margin="0, 19, 0, 0">
-                        <Border Background="{ThemeResource ListViewItemPlaceholderBackgroundThemeBrush}">
-                            <Image Source="{Binding thumbnail.hqDefault}" Stretch="UniformToFill" AutomationProperties.Name="{Binding title}"/>
-                        </Border>
-                        <StackPanel VerticalAlignment="Bottom" Background="{ThemeResource ListViewItemOverlayBackgroundThemeBrush}">
-                            <TextBlock Text="{Binding title}" Foreground="#cccccc" Style="{StaticResource BaseTextBlockStyle}" Height="60" Margin="0" FontWeight="SemiBold" Padding="10, 0"/>
-                            <TextBlock Foreground="#cccccc" Style="{StaticResource BaseTextBlockStyle}" TextWrapping="NoWrap" Padding="10, 0" Margin="0,0,0,10" FontSize="12">
-                                <Run>Uploaded</Run>
-                                <Run Text="{Binding uploaded, Converter={StaticResource DateConverter}}"></Run>
-                            </TextBlock>
-                        </StackPanel>
-                    </Grid>
-                </DataTemplate>
-            </GridView.ItemTemplate>
-        </GridView>
-
-        <!-- Back button and page title -->
+        
+        <!-- Page title -->
         <Grid Grid.Row="0" Margin="19, 19, 19, 0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
@@ -78,6 +47,52 @@
                        Margin="0"
                        FontSize="37"/>
         </Grid>
+
+        <!-- Horizontal scrolling grid -->
+        <GridView Grid.Row="1"
+                  x:Name="itemGridView"
+                  AutomationProperties.AutomationId="ItemsGridView"
+                  AutomationProperties.Name="Items"
+                  TabIndex="1"
+                  Grid.RowSpan="2"
+                  Padding="19, 0"
+                  ItemsSource="{Binding}"
+                  SelectionMode="None"
+                  IsSwipeEnabled="false"
+                  IsItemClickEnabled="True"
+                  ItemClick="ItemView_ItemClick">
+            <GridView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Margin="0, 19, 0, 0">
+                        <Border Background="{ThemeResource ListViewItemPlaceholderBackgroundThemeBrush}">
+                            <Image Source="{Binding thumbnail.hqDefault}" 
+                                   Stretch="UniformToFill" 
+                                   AutomationProperties.Name="{Binding title}"/>
+                        </Border>
+                        <StackPanel VerticalAlignment="Top" 
+                                    Background="{ThemeResource ListViewItemOverlayBackgroundThemeBrush}">
+                            <TextBlock Text="{Binding title}" 
+                                       TextWrapping="NoWrap" 
+                                       TextTrimming="CharacterEllipsis" 
+                                       Foreground="#cccccc" 
+                                       Style="{StaticResource BaseTextBlockStyle}" 
+                                       FontWeight="SemiBold" Padding="10, 4.5"/>
+                        </StackPanel>
+                        <StackPanel VerticalAlignment="Bottom" 
+                                    Background="{ThemeResource ListViewItemOverlayBackgroundThemeBrush}">
+                            <TextBlock Foreground="#cccccc" 
+                                       Style="{StaticResource BaseTextBlockStyle}" 
+                                       TextWrapping="NoWrap" 
+                                       Padding="10, 8.5" 
+                                       FontSize="12">
+                                <Run>Uploaded</Run>
+                                <Run Text="{Binding uploaded, Converter={StaticResource DateConverter}}" />
+                            </TextBlock>
+                        </StackPanel>
+                    </Grid>
+                </DataTemplate>
+            </GridView.ItemTemplate>
+        </GridView>
     </Grid>
     <Page.BottomAppBar>
         <CommandBar x:Name="BottomBar" Background="#432966" Foreground="#cccccc">
