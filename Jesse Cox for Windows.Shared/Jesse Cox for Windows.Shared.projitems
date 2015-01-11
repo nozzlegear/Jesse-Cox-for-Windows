@@ -23,10 +23,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)DataModel\SampleYTSource.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="$(MSBuildThisFileDirectory)Assets\BadgeLogo.scale-100.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\BadgeLogo.scale-140.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\BadgeLogo.scale-180.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\BadgeLogo.scale-240.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Cox\cox1.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Cox\cox2.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Cox\cox3.png" />
@@ -41,40 +37,6 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\Icons\shirt_icon.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Icons\soundcloud_icon.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Icons\twitter_icon.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Logo.scale-100.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Logo.scale-140.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Logo.scale-180.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Logo.scale-80.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\MediumGray.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\moon-nectar.splash-100.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\moon-nectar.splash-140.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\moon-nectar.splash-180.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\SmallLogo.scale-100.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\SmallLogo.scale-140.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\SmallLogo.scale-180.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\SmallLogo.scale-80.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\SmallLogo.targetsize-16.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\SmallLogo.targetsize-256.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\SmallLogo.targetsize-32.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\SmallLogo.targetsize-48.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\SplashScreen.scale-100.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\SplashScreen.scale-140.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\SplashScreen.scale-180.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Square310x310Logo.scale-100.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Square310x310Logo.scale-140.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Square310x310Logo.scale-180.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Square310x310Logo.scale-80.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Square70x70Logo.scale-100.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Square70x70Logo.scale-140.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Square70x70Logo.scale-180.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Square70x70Logo.scale-80.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\StoreLogo.scale-100.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\StoreLogo.scale-140.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\StoreLogo.scale-180.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Wide310x150Logo.scale-100.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Wide310x150Logo.scale-140.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Wide310x150Logo.scale-180.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Wide310x150Logo.scale-80.png" />
     <Content Include="$(MSBuildThisFileDirectory)DataModel\SampleData.json" />
   </ItemGroup>
   <ItemGroup>
