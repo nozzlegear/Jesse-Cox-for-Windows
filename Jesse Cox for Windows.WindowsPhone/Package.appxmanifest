@@ -4,7 +4,7 @@
   <mp:PhoneIdentity PhoneProductId="71b9d5f4-28f7-4486-b67d-6ae817bf5a01" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>Jesse Cox for Windows.WindowsPhone</DisplayName>
-    <PublisherDisplayName>Joshua</PublisherDisplayName>
+    <PublisherDisplayName>Async Build</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
   <Prerequisites>

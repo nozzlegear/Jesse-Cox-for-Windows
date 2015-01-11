@@ -17,7 +17,7 @@
     <PackageCertificateKeyFile>Jesse Cox for Windows_TemporaryKey.pfx</PackageCertificateKeyFile>
     <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
     <AppxBundlePlatforms>neutral</AppxBundlePlatforms>
-    <PackageCertificateThumbprint>1F4644F5E453FCE06166F8C5EE23BE57AEB916CC</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>5ECB38946C0D5EAF3CE23E67A453A8F68CA683FF</PackageCertificateThumbprint>
     <AppxBundle>Always</AppxBundle>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">

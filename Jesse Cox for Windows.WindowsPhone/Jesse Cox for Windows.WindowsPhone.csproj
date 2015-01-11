@@ -97,15 +97,22 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="ButterflyCore">
-      <HintPath>..\ButterflyCore\bin\Debug\ButterflyCore.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.6.0.7\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Background Tasks\Background Tasks.csproj">
+      <Project>{e4b411e6-828e-45d1-a781-756a6e173c87}</Project>
+      <Name>Background Tasks</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ButterflyCore\ButterflyCore.csproj">
+      <Project>{628c2a48-c39a-477b-98fd-915bee4015b8}</Project>
+      <Name>ButterflyCore</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '12.0' ">
     <VisualStudioVersion>12.0</VisualStudioVersion>
