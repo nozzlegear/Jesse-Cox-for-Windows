@@ -32,7 +32,7 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        
+
         <!-- Page title -->
         <Grid Grid.Row="0" Margin="19, 19, 19, 0">
             <Grid.ColumnDefinitions>
@@ -97,7 +97,11 @@
     <Page.BottomAppBar>
         <CommandBar x:Name="BottomBar" Background="#432966" Foreground="#cccccc">
             <AppBarButton x:Name="RefreshButton" Label="Refresh" Icon="Refresh" Click="RefreshButton_Click" />
-            <AppBarButton x:Name="SettingsButton" Label="Settings" Icon="Setting" Click="SettingsButton_Click" />
+            <CommandBar.SecondaryCommands>
+                <AppBarButton x:Name="SettingsButton" Label="Settings" Click="SettingsButton_Click" />
+                <AppBarButton x:Name="AboutButton" Label="About" Click="AboutButton_Click" />
+                <AppBarButton x:Name="PrivacyButton" Label="Privacy Policy" Click="PrivacyButton_Click" />
+            </CommandBar.SecondaryCommands>
         </CommandBar>
     </Page.BottomAppBar>
 </Page>

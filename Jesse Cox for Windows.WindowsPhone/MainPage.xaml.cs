@@ -14,6 +14,7 @@ using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 using ButterflyCore;
 using ButterflyCore.Models;
+using Space_Butterfly.Extra_Pages;
 
 namespace Space_Butterfly
 {
@@ -247,10 +248,17 @@ namespace Space_Butterfly
 
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
-            //var flyout = new GeneralSettingsFlyout();
-            //flyout.Show();
+            this.Frame.Navigate(typeof(SettingsPage));
+        }
 
-            BottomBar.IsOpen = false;
+        private void AboutButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(AboutPage));
+        }
+
+        private void PrivacyButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(PrivacyPage));
         }
 
         #endregion

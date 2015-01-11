@@ -141,6 +141,7 @@ namespace Space_Butterfly
         protected override void OnWindowCreated(WindowCreatedEventArgs args)
         {
 #if WINDOWS_APP
+
             SettingsPane.GetForCurrentView().CommandsRequested += (s, e) =>
            {
                var generalCommand = new SettingsCommand("general", "General Settings", (handler) =>
