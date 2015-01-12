@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest" xmlns:m3="http://schemas.microsoft.com/appx/2014/manifest" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest">
-  <Identity Name="11272Kingbird.JesseCoxforWindows" Publisher="CN=47958F3E-04D3-4EFC-B249-2D204C942350" Version="1.1.0.0" />
+  <Identity Name="11272Kingbird.JesseCoxforWindows" Publisher="CN=47958F3E-04D3-4EFC-B249-2D204C942350" Version="1.1.0.1" />
   <mp:PhoneIdentity PhoneProductId="e7ea7aec-0552-4ecc-ae0d-c62cfccd1e8d" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>Jesse Cox for Windows</DisplayName>
