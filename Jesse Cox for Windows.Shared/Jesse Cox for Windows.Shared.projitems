@@ -21,6 +21,7 @@
       <DependentUpon>ProgressOverlay.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)DataModel\SampleYTSource.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TaskHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="$(MSBuildThisFileDirectory)Assets\Cox\cox1.png" />

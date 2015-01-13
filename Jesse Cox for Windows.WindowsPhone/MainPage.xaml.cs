@@ -15,6 +15,8 @@ using Windows.UI.Xaml.Navigation;
 using ButterflyCore;
 using ButterflyCore.Models;
 using Space_Butterfly.Extra_Pages;
+using Windows.ApplicationModel;
+using Windows.Storage;
 
 namespace Space_Butterfly
 {
@@ -26,6 +28,7 @@ namespace Space_Butterfly
         private ObservableCollection<Item> items = new ObservableCollection<Item>();
         private Client core = new Client();
         private Popup popup = new Popup();
+        private ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 
         public NavigationHelper NavigationHelper
         {
@@ -43,45 +46,37 @@ namespace Space_Butterfly
             this.navigationHelper = new NavigationHelper(this);
             this.navigationHelper.LoadState += navigationHelper_LoadState;
         }
-        private void navigationHelper_LoadState(object sender, LoadStateEventArgs e)
+
+        private async void navigationHelper_LoadState(object sender, LoadStateEventArgs e)
         {
             CheckSources();
-            CheckTaskRegistration();
+
+            var taskHelper = new TaskHelper();
+            string backgroundAccessStorageKey = "LastBackgroundAccessStatus";
+
+            //App must revoke background access, then reregister tasks if it was updated
+            var appUpdated = taskHelper.CheckAppVersion();
+
+            //Check/Request background access
+            var request = await BackgroundExecutionManager.RequestAccessAsync();
+
+            if (request.ToString() == "Denied")
+            {
+                await new MessageDialog("Your phone has disabled background tasks for this app. Without background tasks, the app cannot notify you of new videos or current Twitch streams. Please enable background access for this application by going to Settings => Battery Saver => Usage => Jesse Cox for Windows.", "Background Access").ShowAsync();
+            }
+            else
+            {
+                //Force register a new task if last background access check was not granted, or if the app was updated
+                var forceRegister = localSettings.Values[backgroundAccessStorageKey] as string != request.ToString() || appUpdated;
+
+                taskHelper.RegisterTasks(forceRegister);
+            }
+
+            //Save the new background access status
+            localSettings.Values[backgroundAccessStorageKey] = request.ToString();
         }
 
         #endregion
-
-        #region Background Task Registration
-
-        private readonly string TaskName = "SBSourceCheckingTask";
-
-        private async void CheckTaskRegistration()
-        {
-            //Try to find task
-            var task = BackgroundTaskRegistration.AllTasks.FirstOrDefault(x => x.Value?.Name == TaskName);
-
-            if (task.Value == null)
-            {
-                //Register task
-                var taskBuilder = new BackgroundTaskBuilder()
-                {
-                    Name = TaskName,
-                    TaskEntryPoint = "Background_Tasks.SourceCheckerTask"
-                };
-
-                taskBuilder.SetTrigger(new TimeTrigger(30, false));
-                taskBuilder.AddCondition(new SystemCondition(SystemConditionType.InternetAvailable));
-
-                //App needs to be added to lock screen to run background tasks. Request permission.
-                await BackgroundExecutionManager.RequestAccessAsync(); //NOTE: App can only ask permission once. User will need to manually place app on lock screen if declined.
-
-                var registration = taskBuilder.Register();
-
-                string breaker = null;
-            }
-        }
-
-        #endregion 
 
         #region NavigationHelper registration
 
