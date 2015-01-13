@@ -28,6 +28,12 @@ namespace Background_Tasks
             //Async background tasks must use deferrals on the task instance
             var deferal = taskInstance.GetDeferral();
 
+#if DEBUG
+
+            CreateAndShowToast("http://placehold.it/300x300", "Checked at \{DateTime.Now}.", null);
+
+#endif
+
             //Get settings
             var NotifyYouTube = LocalSettings.Values["NotifyYouTube"] as bool?;
             var NotifyStream = LocalSettings.Values["NotifyStream"] as bool?;
@@ -143,7 +149,10 @@ namespace Background_Tasks
                 //Get xml text
                 xml.GetElementsByTagName("text")[0].AppendChild(xml.CreateTextNode(text));
 
-                ((XmlElement)xml.SelectSingleNode("/toast")).SetAttribute("launch", JsonConvert.SerializeObject(new ToastLaunch("SourceCheckerTask", launchUrl)));
+                if (!string.IsNullOrEmpty(launchUrl))
+                {
+                    ((XmlElement)xml.SelectSingleNode("/toast")).SetAttribute("launch", JsonConvert.SerializeObject(new ToastLaunch("SourceCheckerTask", launchUrl)));
+                }
 
                 ToastNotificationManager.CreateToastNotifier().Show(new ToastNotification(xml));
             }

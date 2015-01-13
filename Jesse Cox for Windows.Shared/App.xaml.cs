@@ -57,6 +57,8 @@ namespace Space_Butterfly
             }
 #endif
 
+            var settings = Windows.Storage.ApplicationData.Current.LocalSettings;
+
             Frame rootFrame = Window.Current.Content as Frame;
 
             // Do not repeat app initialization when the Window already has content,

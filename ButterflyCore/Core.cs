@@ -13,7 +13,7 @@ namespace ButterflyCore
     public sealed class Client
     {
         private readonly string youtubeUrl = "http://gdata.youtube.com/feeds/api/users/omfgcata/uploads?v=2&alt=jsonc"; 
-        private readonly string twitchUrl = "https://api.twitch.tv/kraken/streams/smitegame.json";
+        private readonly string twitchUrl = "https://api.twitch.tv/kraken/streams/shaboozey.json";
         private readonly string cooptionalUrl = "https://api.twitch.tv/kraken/streams/totalbiscuit.json";
         private readonly string coxncrendorUrl = "";
 
