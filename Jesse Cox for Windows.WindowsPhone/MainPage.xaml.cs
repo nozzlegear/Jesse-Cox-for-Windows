@@ -69,7 +69,7 @@ namespace Space_Butterfly
                 //Force register a new task if last background access check was not granted, or if the app was updated
                 var forceRegister = localSettings.Values[backgroundAccessStorageKey] as string != request.ToString() || appUpdated;
 
-                taskHelper.RegisterTasks(forceRegister);
+                taskHelper.RegisterTasks(30, forceRegister); //Lowest possible timer for Windows Phone is 30 min
             }
 
             //Save the new background access status

@@ -12,7 +12,6 @@ namespace Space_Butterfly
     {
         private readonly string TaskName = "SBSourceCheckingTask";
 
-        // Check for app updates. If an update occurred, we must remove background access and request it again
         /// <summary>
         /// Checks if the app has been updated since the last run. If so, we must remove background access and request it again,
         /// then re-register all background tasks.
@@ -46,7 +45,7 @@ namespace Space_Butterfly
         /// Registers background tasks if they aren't already registered, or if the app was recently updated (and therefore needs to re-register tasks).
         /// </summary>
         /// <param name="forceRegister">A boolean indicating that we should disregard whether the task already exists and instead force register a new one. Desirable if the app has been updated or background access was initially denied but is not granted.</param>
-        public void RegisterTasks(bool forceRegister = false)
+        public void RegisterTasks(uint freshnessTime, bool forceRegister = false)
         {
             //Try to find task
             var task = BackgroundTaskRegistration.AllTasks.FirstOrDefault(x => x.Value?.Name == TaskName);
@@ -66,7 +65,7 @@ namespace Space_Butterfly
                     TaskEntryPoint = "Background_Tasks.SourceCheckerTask"
                 };
 
-                taskBuilder.SetTrigger(new TimeTrigger(30, false));
+                taskBuilder.SetTrigger(new TimeTrigger(freshnessTime, false));
                 taskBuilder.AddCondition(new SystemCondition(SystemConditionType.InternetAvailable));
 
                 var registration = taskBuilder.Register();
