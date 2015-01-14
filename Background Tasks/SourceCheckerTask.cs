@@ -29,9 +29,7 @@ namespace Background_Tasks
             var deferal = taskInstance.GetDeferral();
 
 #if DEBUG
-
             CreateAndShowToast("http://placehold.it/300x300", "Checked at \{DateTime.Now}.", null);
-
 #endif
 
             //Get settings
@@ -70,11 +68,6 @@ namespace Background_Tasks
 
             if (youtubeCheck.Success && youtubeCheck.Data != null)
             {
-#if DEBUG
-                //Delete lastVideoId to always show toast
-                LocalSettings.Values["LastVideoId"] = null;
-#endif
-
                 //Get id of last video to check if there are any new videos
                 var lastVideoId = LocalSettings.Values["LastVideoId"] as string;
 
@@ -116,23 +109,19 @@ namespace Background_Tasks
         {
             var podcastCheck = await core.GetCooptionalStatus();
 
-            if (podcastCheck.Success && podcastCheck.Data != null && podcastCheck.Data.stream != null)
+            if (podcastCheck.Success && podcastCheck.Data?.stream != null)
             {
                 //Get id of last podcast stream
                 var lastPodcastStreamId = LocalSettings.Values["LastPodcastStreamId"] as string;
 
-                if (lastPodcastStreamId?.ToLower() != podcastCheck.Data.stream?._id?.ToLower())
+                // Check for an instance of 'Optional' in the stream's channel status description. 
+                if (lastPodcastStreamId?.ToLower() != podcastCheck.Data.stream?._id?.ToLower() && podcastCheck.Data.stream.channel.status.ToLower().Contains("optional"))
                 {
-                    // Check for an instance of 'Optional' in the stream's channel status description. 
-                    // Haven't confirmed that this is where it will appear, but a quick look at the JSON indicates it will be.
-                    if (podcastCheck.Data.stream.channel.status.ToLower().Contains("optional"))
-                    {
-                        //Show notification
-                        CreateAndShowToast(podcastCheck.Data.stream.channel?.video_banner, "The Co-Optional Podcast just went live on Twitch!", podcastCheck.Data.stream.channel.url);
+                    //Show notification
+                    CreateAndShowToast(podcastCheck.Data.stream.channel?.video_banner, "The Co-Optional Podcast just went live on Twitch!", podcastCheck.Data.stream.channel.url);
 
-                        //Save podcast stream id to prevent multiple notifications
-                        LocalSettings.Values["LastPodcastStreamId"] = podcastCheck.Data.stream._id;
-                    }
+                    //Save podcast stream id to prevent multiple notifications
+                    LocalSettings.Values["LastPodcastStreamId"] = podcastCheck.Data.stream._id;
                 }
             }
         }
