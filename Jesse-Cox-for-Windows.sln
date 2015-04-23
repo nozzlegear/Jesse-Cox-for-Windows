@@ -11,6 +11,16 @@ Project("{262852C6-CD72-467D-83FE-5EEB1973A190}") = "Jesse_Cox_for_Windows.Windo
 EndProject
 Project("{262852C6-CD72-467D-83FE-5EEB1973A190}") = "Jesse_Cox_for_Windows.WindowsPhone", "Jesse-Cox-for-Windows\Jesse_Cox_for_Windows.WindowsPhone\Jesse_Cox_for_Windows.WindowsPhone.jsproj", "{E94879C5-F960-48EE-A283-96C8A7AA3903}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C199A138-6A95-4346-BC83-C3B9A589DA95}"
+	ProjectSection(SolutionItems) = preProject
+		bower.json = bower.json
+		gruntfile.js = gruntfile.js
+		LICENSE.txt = LICENSE.txt
+		package.json = package.json
+		README.md = README.md
+		tsd.json = tsd.json
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Jesse-Cox-for-Windows\Jesse_Cox_for_Windows.Shared\Jesse_Cox_for_Windows.Shared.projitems*{e94879c5-f960-48ee-a283-96c8a7aa3903}*SharedItemsImports = 5
