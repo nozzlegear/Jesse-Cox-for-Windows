@@ -1,0 +1,20 @@
+{
+  "name": "jesse-cox-for-windows",
+  "version": "0.0.0",
+  "homepage": "https://github.com/nozzlegear/jesse-cox-for-windows",
+  "authors": [
+    "Joshua Harms <joshua@nozzlegear.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "knockout": "~3.3.0",
+    "lodash": "~3.7.0"
+  }
+}

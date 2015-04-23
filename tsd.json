@@ -1,0 +1,21 @@
+{
+  "version": "v4",
+  "repo": "borisyankov/DefinitelyTyped",
+  "ref": "master",
+  "path": "Jesse-Cox-for-Windows/Jesse_Cox_for_Windows.Shared/typings",
+  "bundle": "typings/tsd.d.ts",
+  "installed": {
+    "knockout/knockout.d.ts": {
+      "commit": "51d426745a1c0a88ca3234102f0a87ab3fcff334"
+    },
+    "lodash/lodash.d.ts": {
+      "commit": "51d426745a1c0a88ca3234102f0a87ab3fcff334"
+    },
+    "winrt/winrt.d.ts": {
+      "commit": "51d426745a1c0a88ca3234102f0a87ab3fcff334"
+    },
+    "winjs/winjs.d.ts": {
+      "commit": "51d426745a1c0a88ca3234102f0a87ab3fcff334"
+    }
+  }
+}

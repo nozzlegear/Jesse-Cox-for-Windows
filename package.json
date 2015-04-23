@@ -1,0 +1,29 @@
+{
+  "name": "jesse-cox-for-windows",
+  "version": "1.0.0",
+  "description": "Jesse Cox for Windows\r =====================",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nozzlegear/jesse-cox-for-windows.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nozzlegear/jesse-cox-for-windows/issues"
+  },
+  "homepage": "https://github.com/nozzlegear/jesse-cox-for-windows",
+  "devDependencies": {
+    "bower": "^1.4.1",
+    "grunt": "^0.4.5",
+    "grunt-bower-task": "^0.4.0",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-shell": "^1.1.2",
+    "grunt-typescript": "^0.6.1",
+    "tsd": "^0.5.7",
+    "typescript": "^1.4.1"
+  }
+}

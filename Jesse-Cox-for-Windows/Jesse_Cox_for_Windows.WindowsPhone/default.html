@@ -1,0 +1,26 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Jesse_Cox_for_Windows.WindowsPhone</title>
+
+    <!-- WinJS references -->
+    <!-- At runtime, ui-themed.css resolves to ui-themed.light.css or ui-themed.dark.css 
+    based on the user’s theme setting. This is part of the MRT resource loading functionality. -->
+    <link href="/css/ui-themed.css" rel="stylesheet" />
+    <script src="//Microsoft.Phone.WinJS.2.1/js/base.js"></script>
+    <script src="//Microsoft.Phone.WinJS.2.1/js/ui.js"></script>
+    <script src="libraries/knockout/knockout.js"></script>
+    <script src="libraries/lodash/lodash.js"></script>
+    <script src="libraries/custom/navigator.js"></script>
+
+    <!-- Jesse_Cox_for_Windows.Phone references -->
+    <link href="/css/default.css" rel="stylesheet" />
+    <script src="default.js"></script>
+</head>
+<body class="phone">
+    <div id="contenthost"
+         data-win-control="Application.PageControlNavigator"
+         data-win-options="{home: '/pages/home/home.html'}"></div>
+</body>
+</html>
