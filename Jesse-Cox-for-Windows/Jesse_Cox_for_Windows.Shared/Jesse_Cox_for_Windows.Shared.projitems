@@ -7,14 +7,22 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Include="$(MSBuildThisFileDirectory)default.js" />
+    <Content Include="$(MSBuildThisFileDirectory)default.js.map" />
     <Content Include="$(MSBuildThisFileDirectory)default.ts" />
     <Content Include="$(MSBuildThisFileDirectory)Libraries\custom\navigator.js" />
     <Content Include="$(MSBuildThisFileDirectory)Libraries\knockout\knockout.js" />
     <Content Include="$(MSBuildThisFileDirectory)Libraries\lodash\lodash.js" />
+    <Content Include="$(MSBuildThisFileDirectory)Pages\home\home.css" />
+    <Content Include="$(MSBuildThisFileDirectory)Pages\home\home.html" />
+    <Content Include="$(MSBuildThisFileDirectory)Pages\home\home.js" />
+    <Content Include="$(MSBuildThisFileDirectory)strings.resjson" />
     <Content Include="$(MSBuildThisFileDirectory)typings\custom\Windows.UI.ViewManagement.StatusBar.d.ts" />
     <Content Include="$(MSBuildThisFileDirectory)typings\knockout\knockout.d.ts" />
     <Content Include="$(MSBuildThisFileDirectory)typings\lodash\lodash.d.ts" />
     <Content Include="$(MSBuildThisFileDirectory)typings\winjs\winjs.d.ts" />
     <Content Include="$(MSBuildThisFileDirectory)typings\winrt\winrt.d.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)Images\" />
   </ItemGroup>
 </Project>

@@ -45,7 +45,7 @@ module.exports = function (grunt) {
         watch: {
             typescript: {
                 files: [sharedDirectory + "/*.ts", sharedDirectory + '/**/*.ts', '!' + sharedDirectory + '/**/*.d.ts'],
-                tasks: ["typescript:compileSingle"],
+                tasks: ["typescript:base"],
                 options: {
                     spawn: false
                 }

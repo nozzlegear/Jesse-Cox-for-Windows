@@ -4,14 +4,13 @@
 /// <reference path="typings/lodash/lodash.d.ts" />
 /// <reference path="typings/knockout/knockout.d.ts" />
 
-
 module App
 {
     "use strict";
 
     declare var Application;
 
-    export class Context
+    export class Context    
     {
         constructor()
         {
@@ -19,11 +18,11 @@ module App
             WinJS.Application.addEventListener("activated", this.OnActivated);
             WinJS.Application.oncheckpoint = this.OnCheckpoint;
 
-            //Show the statusbar by default
-            this.StatusBar = Windows.UI.ViewManagement.StatusBar.getForCurrentView();
-            this.StatusBar.backgroundColor = Windows.UI.Colors.white;
-            this.StatusBar.foregroundColor = Windows.UI.Colors.black;
-            this.StatusBar.showAsync();
+            ////Show the statusbar by default
+            //this.StatusBar = Windows.UI.ViewManagement.StatusBar.getForCurrentView();
+            //this.StatusBar.backgroundColor = Windows.UI.Colors.white;
+            //this.StatusBar.foregroundColor = Windows.UI.Colors.black;
+            //this.StatusBar.showAsync();
 
             //Define the default context so it can be accessed from WinJS bindings
             WinJS.Namespace.define("Context", this);
@@ -53,16 +52,15 @@ module App
             },
         };
 
-
         //#region Variables
 
         //#region Objects and arrays
 
         public CurrentPage: any;
 
-        public Resources = WinJS.Binding.as({
+        public Resources = {
             AppName: WinJS.Resources.getString("strings/AppName").value
-        });
+        };
 
         public StatusBar: Windows.UI.ViewManagement.StatusBar;
 
@@ -131,12 +129,6 @@ module App
                     // TODO: Application has been newly launched. 
                     // CONT: Check if user is logged in, navigate to home or login page accordingly.
                     // # # #
-
-                    if (!this.AuntieDot.Retrieve("RedditUsername"))
-                    {
-                        //User is not logged in.
-                        initialLocation = "/pages/login/login.html";
-                    };
                 } else
                 {
                     // TODO: This application has been reactivated from suspension.
@@ -149,10 +141,6 @@ module App
                 var process = ui.processAll().then(() =>
                 {
                     return sched.requestDrain(sched.Priority.aboveNormal + 1);
-                }).then(() =>
-                {
-                    //All functions bound with declarative binding in HTML must be marked as supported
-                    return this.ProcessDataboundFunctions(this.EventHandlers);
                 }).then(() =>
                 {
                     return ui.enableAnimations();
@@ -180,13 +168,6 @@ module App
         //#endregion
 
         //#region Event handlers
-
-        public EventHandlers = {
-            TestHandler: (e) =>
-            {
-                this.Resources.AppName = "Your tax dollars at work!";
-            }
-        };
 
         //#endregion
     }

@@ -1,7 +1,7 @@
 {
   "name": "jesse-cox-for-windows",
   "version": "1.0.0",
-  "description": "Jesse Cox for Windows\r =====================",
+  "description": "An app for Windows and Windows Phone that notifies users when Jesse Cox uploads a new video to YouTube, or when he (or the Co-optional Podcast) goes live on Twitch.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,8 +10,8 @@
     "type": "git",
     "url": "https://github.com/nozzlegear/jesse-cox-for-windows.git"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Joshua Harms (joshua@nozzlegear.com)",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/nozzlegear/jesse-cox-for-windows/issues"
   },
