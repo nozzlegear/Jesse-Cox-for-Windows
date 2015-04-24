@@ -58,6 +58,30 @@ var App;
             //#endregion
             //#endregion
             //#region Utility functions
+            this.PrepareSampleGrid = function () {
+                var itemArray = [
+                    { title: "Marvelous Mint", text: "Gelato", picture: "/images/fruits/60Mint.png" },
+                    { title: "Succulent Strawberry", text: "Sorbet", picture: "/images/fruits/60Strawberry.png" },
+                    { title: "Banana Blast", text: "Low-fat frozen yogurt", picture: "/images/fruits/60Banana.png" },
+                    { title: "Lavish Lemon Ice", text: "Sorbet", picture: "/images/fruits/60Lemon.png" },
+                    { title: "Creamy Orange", text: "Sorbet", picture: "/images/fruits/60Orange.png" },
+                    { title: "Very Vanilla", text: "Ice Cream", picture: "/images/fruits/60Vanilla.png" },
+                    { title: "Banana Blast", text: "Low-fat frozen yogurt", picture: "/images/fruits/60Banana.png" },
+                    { title: "Lavish Lemon Ice", text: "Sorbet", picture: "/images/fruits/60Lemon.png" }
+                ];
+
+                var items = [];
+
+                for (var i = 0; i < 20; i++) {
+                    itemArray.forEach(function (item) {
+                        items.push(item);
+                    });
+                }
+
+                WinJS.Namespace.define("Sample.ListView", {
+                    data: new WinJS.Binding.List(items)
+                });
+            };
             this.GetAppSetting = function (key) {
                 if (!_this.AppSettings) {
                     _this.AppSettings = {};
@@ -139,6 +163,9 @@ var App;
             //Define the default context so it can be accessed from WinJS bindings
             WinJS.Namespace.define("Context", this);
 
+            //Temp: Prepare sample data grid
+            this.PrepareSampleGrid();
+
             WinJS.Application.start();
         }
         Context.prototype.RegisterApplicationPages = function () {
@@ -154,6 +181,8 @@ var App;
                         ko.applyBindings(_this, document.getElementById("contenthost"));
 
                         _this.CurrentPage().HandlePageReady();
+
+                        WinJS.UI.processAll();
                     });
                 },
                 unload: function (args) {

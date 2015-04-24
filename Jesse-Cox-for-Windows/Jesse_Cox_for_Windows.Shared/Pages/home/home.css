@@ -1,32 +1,59 @@
-﻿.home section {
-	margin: auto 120px;
-}
-
-.phone .home .page-section {
-	margin: auto 24px;
-}
-
-.phone .home .page-header .titlearea {
-	-ms-grid-column: 1;
-	margin-top: 37px;
-	margin-left: 24px;
-	font-size: 28pt;
-	width: calc(100vw - 20px);
-}
-
-.phone .home .back-button {
-	display: none;
+﻿.home section,
+.home header {
+    margin: auto 60px;
 }
 
 .fragment {
-	-ms-grid-columns: 1fr;
-	-ms-grid-rows: 128px 1fr;
-	display: -ms-grid;
-	height: 100%;
-	width: 100%;
+    -ms-grid-columns: 1fr;
+    -ms-grid-rows: 128px 1fr;
+    display: -ms-grid;
+    height: 100%;
+    width: 100%;
 }
 
-	.fragment section[role=main] {
-		-ms-grid-row: 2;
-		height: 100%;
-	}
+    .fragment section[role=main] {
+        -ms-grid-row: 2;
+        height: 100%;
+    }
+
+.home header {
+    display:-ms-grid;
+    -ms-grid-columns:auto 1fr;
+    padding-top:10px;
+}
+
+    .home header > titlearea {
+        -ms-grid-column:1;
+        margin:0;
+    }
+
+    .home header > div.image-container {
+        -ms-grid-column:2;
+        text-align:right;
+    }
+
+        .home header > div.image-container > img {
+            max-height:100px;
+        }
+
+/*
+    # # #
+    TODO: Use .phone to make the page responsive.
+    # # #
+*/
+
+.phone .home .page-section {
+    margin: auto 24px;
+}
+
+.phone .home .page-header .titlearea {
+    -ms-grid-column: 1;
+    margin-top: 37px;
+    margin-left: 24px;
+    font-size: 28pt;
+    width: calc(100vw - 20px);
+}
+
+.phone .home .back-button {
+    display: none;
+}

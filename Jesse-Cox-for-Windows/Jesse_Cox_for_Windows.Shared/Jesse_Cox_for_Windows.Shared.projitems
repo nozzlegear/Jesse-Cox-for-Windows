@@ -6,9 +6,17 @@
     <SharedGUID>5899926a-202e-4d75-b12a-37b484471d93</SharedGUID>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)Images\cox1.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Images\cox2.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Images\cox3.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Images\cox4.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Images\cox5.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Images\cox6.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Images\cox7.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Images\cox8.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Images\live.png" />
     <Content Include="$(MSBuildThisFileDirectory)Libraries\custom\ApplicationEngine\ApplicationEngine.js" />
     <Content Include="$(MSBuildThisFileDirectory)Libraries\custom\ApplicationEngine\ApplicationEngine.js.map" />
-    <None Include="$(MSBuildThisFileDirectory)AppSettings.private.json" />
     <Content Include="$(MSBuildThisFileDirectory)default.js" />
     <Content Include="$(MSBuildThisFileDirectory)default.js.map" />
     <Content Include="$(MSBuildThisFileDirectory)default.ts" />
@@ -29,9 +37,6 @@
     <Content Include="$(MSBuildThisFileDirectory)typings\lodash\lodash.d.ts" />
     <Content Include="$(MSBuildThisFileDirectory)typings\winjs\winjs.d.ts" />
     <Content Include="$(MSBuildThisFileDirectory)typings\winrt\winrt.d.ts" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="$(MSBuildThisFileDirectory)Images\" />
   </ItemGroup>
   <ItemGroup>
     <PRIResource Include="$(MSBuildThisFileDirectory)AppSettings.private.resjson" />
