@@ -6,7 +6,9 @@
     <SharedGUID>5899926a-202e-4d75-b12a-37b484471d93</SharedGUID>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="$(MSBuildThisFileDirectory)AppSettings.private.json" />
+    <Content Include="$(MSBuildThisFileDirectory)Libraries\custom\ApplicationEngine\ApplicationEngine.js" />
+    <Content Include="$(MSBuildThisFileDirectory)Libraries\custom\ApplicationEngine\ApplicationEngine.js.map" />
+    <None Include="$(MSBuildThisFileDirectory)AppSettings.private.json" />
     <Content Include="$(MSBuildThisFileDirectory)default.js" />
     <Content Include="$(MSBuildThisFileDirectory)default.js.map" />
     <Content Include="$(MSBuildThisFileDirectory)default.ts" />
@@ -19,7 +21,7 @@
     <Content Include="$(MSBuildThisFileDirectory)Pages\home\home.js" />
     <Content Include="$(MSBuildThisFileDirectory)Pages\home\home.js.map" />
     <Content Include="$(MSBuildThisFileDirectory)Pages\home\home.ts" />
-    <Content Include="$(MSBuildThisFileDirectory)strings.resjson" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)strings.resjson" />
     <Content Include="$(MSBuildThisFileDirectory)typings\custom\IPage.d.ts" />
     <Content Include="$(MSBuildThisFileDirectory)typings\custom\Windows.UI.ViewManagement.StatusBar.d.ts" />
     <Content Include="$(MSBuildThisFileDirectory)typings\custom\youtube.playlist.video.d.ts" />
@@ -30,5 +32,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Images\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Include="$(MSBuildThisFileDirectory)AppSettings.private.resjson" />
   </ItemGroup>
 </Project>
