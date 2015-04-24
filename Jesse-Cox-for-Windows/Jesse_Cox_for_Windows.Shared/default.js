@@ -1,3 +1,4 @@
+/// <reference path="typings/custom/ipage.d.ts" />
 /// <reference path="typings/custom/windows.ui.viewmanagement.statusbar.d.ts" />
 /// <reference path="typings/winrt/winrt.d.ts" />
 /// <reference path="typings/winjs/winjs.d.ts" />
@@ -5,48 +6,61 @@
 /// <reference path="typings/knockout/knockout.d.ts" />
 var App;
 (function (App) {
-    "use strict";
     var Context = (function () {
         function Context() {
             var _this = this;
-            this.Blackbox = {
+            //#region Storage
+            this.RoamingStorage = {
                 Save: function (key, value) {
                     Windows.Storage.ApplicationData.current.roamingSettings.values[key] = value;
                 },
                 Retrieve: function (key) {
                     return Windows.Storage.ApplicationData.current.roamingSettings.values[key];
+                },
+                Delete: function (key) {
+                    Windows.Storage.ApplicationData.current.roamingSettings.values.remove(key);
                 }
             };
-            this.AuntieDot = {
+            this.LocalStorage = {
                 Save: function (key, value) {
                     Windows.Storage.ApplicationData.current.localSettings.values[key] = value;
                 },
                 Retrieve: function (key) {
                     return Windows.Storage.ApplicationData.current.localSettings.values[key];
+                },
+                Delete: function (key) {
+                    Windows.Storage.ApplicationData.current.localSettings.values.remove(key);
                 }
             };
-            this.Resources = {
+            this.SessionStorage = {
+                Save: function (key, value) {
+                    sessionStorage.setItem(key, value);
+                },
+                Retrieve: function (key) {
+                    return sessionStorage.getItem(key);
+                },
+                Delete: function (key) {
+                    sessionStorage.removeItem(key);
+                }
+            };
+            //#endregion
+            //#region Variables
+            //#region Objects and arrays
+            this.CurrentPage = ko.observable();
+            //#endregion
+            //#region Strings
+            this.StringResources = {
                 AppName: WinJS.Resources.getString("strings/AppName").value
             };
             //#endregion
-            //#region Strings
-            this.YourName = WinJS.Binding.as({
-                Value: "Test New Binding Setup"
-            });
-            //#endregion
             //#endregion
             //#region Utility functions
-            this.SetCurrentPage = function (page) {
-                _this.CurrentPage = page;
+            this.GetAppSetting = function (key) {
+                return _this.AppSettings[key];
             };
             //#endregion
             //#region WinJS application event handlers
             this.OnActivated = function (args) {
-                WinJS.Binding.bind(_this.YourName, {
-                    Value: function () {
-                        // This is an example of how to subscribe to WinJS bindings.
-                    }
-                });
                 var execState = Windows.ApplicationModel.Activation.ApplicationExecutionState;
                 var activeKind = Windows.ApplicationModel.Activation.ActivationKind;
                 var activation = Windows.ApplicationModel.Activation;
@@ -66,6 +80,13 @@ var App;
                     ui.disableAnimations();
                     var process = ui.processAll().then(function () {
                         return sched.requestDrain(sched.Priority.aboveNormal + 1);
+                    }).then(function () {
+                        var url = new Windows.Foundation.Uri("ms-appx:///AppSettings.private.json");
+                        return Windows.Storage.StorageFile.getFileFromApplicationUriAsync(url).then(function (file) {
+                            Windows.Storage.FileIO.readTextAsync(file).then(function (text) {
+                                //this.AppSettings = JSON.parse(text);
+                            });
+                        });
                     }).then(function () {
                         return ui.enableAnimations();
                     }).then(function () {
@@ -87,28 +108,55 @@ var App;
             //Set app event listeners
             WinJS.Application.addEventListener("activated", this.OnActivated);
             WinJS.Application.oncheckpoint = this.OnCheckpoint;
-            ////Show the statusbar by default
-            //this.StatusBar = Windows.UI.ViewManagement.StatusBar.getForCurrentView();
-            //this.StatusBar.backgroundColor = Windows.UI.Colors.white;
-            //this.StatusBar.foregroundColor = Windows.UI.Colors.black;
-            //this.StatusBar.showAsync();
+            //Must register all pages
+            this.RegisterApplicationPages();
+            //Hide status bar on phones
+            if (Windows.UI.ViewManagement.StatusBar) {
+                this.StatusBar = Windows.UI.ViewManagement.StatusBar.getForCurrentView();
+                this.StatusBar.hideAsync();
+            }
+            //Initialize Engine
+            this.Engine = new App.ApplicationEngine(this.GetAppSetting("YouTubeApiKey"));
             //Define the default context so it can be accessed from WinJS bindings
             WinJS.Namespace.define("Context", this);
             WinJS.Application.start();
         }
-        Context.prototype.ProcessDataboundFunctions = function (functions) {
-            Object.keys(functions).forEach(function (key) {
-                var func = functions[key];
-                if (typeof func === "function") {
-                    WinJS.Utilities.markSupportedForProcessing(functions[key]);
+        Context.prototype.RegisterApplicationPages = function () {
+            var _this = this;
+            //All pages call ready, unload and updatelayout in the same way.
+            var defaultHandlers = {
+                ready: function () {
+                    _this.PageLoadingPromise.then(function (pageController) {
+                        _this.CurrentPage(pageController);
+                        _this.CurrentPage().HandlePageReady();
+                    });
+                },
+                unload: function (args) {
+                    if (_this.CurrentPage()) {
+                        _this.CurrentPage().HandlePageUnload(args);
+                    }
+                },
+                updateLayout: function (el, args) {
+                    if (_this.CurrentPage()) {
+                        _this.CurrentPage().HandlePageUpdateLayout(el, args);
+                    }
                 }
-                ;
-            });
+            };
+            //Home page
+            WinJS.UI.Pages.define("/pages/home/home.html", _.extend(defaultHandlers, {
+                processed: function (e, args) {
+                    // In a larger app, we would use require.js to asynchronously load each page controller.
+                    // Since this is a small app, we're just including the controllers on the default page.
+                    _this.PageLoadingPromise = new WinJS.Promise(function (resolve, reject) {
+                        App.HomeController.ProcessPage(resolve, reject, _this);
+                    });
+                }
+            }));
         };
         return Context;
     })();
     App.Context = Context;
 })(App || (App = {}));
 //Your tax dollars at work!
-new App.Context();
+ko.applyBindings(new App.Context(), document.getElementById("contentHost"));
 //# sourceMappingURL=default.js.map

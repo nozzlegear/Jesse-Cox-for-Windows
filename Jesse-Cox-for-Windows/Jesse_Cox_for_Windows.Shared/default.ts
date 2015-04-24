@@ -1,28 +1,30 @@
-﻿/// <reference path="typings/custom/windows.ui.viewmanagement.statusbar.d.ts" />
+﻿/// <reference path="typings/custom/ipage.d.ts" />
+/// <reference path="typings/custom/windows.ui.viewmanagement.statusbar.d.ts" />
 /// <reference path="typings/winrt/winrt.d.ts" />
 /// <reference path="typings/winjs/winjs.d.ts" />
 /// <reference path="typings/lodash/lodash.d.ts" />
 /// <reference path="typings/knockout/knockout.d.ts" />
 
-module App
-{
-    "use strict";
-
+module App {
     declare var Application;
 
-    export class Context    
-    {
-        constructor()
-        {
+    export class Context {
+        constructor() {
             //Set app event listeners
             WinJS.Application.addEventListener("activated", this.OnActivated);
             WinJS.Application.oncheckpoint = this.OnCheckpoint;
 
-            ////Show the statusbar by default
-            //this.StatusBar = Windows.UI.ViewManagement.StatusBar.getForCurrentView();
-            //this.StatusBar.backgroundColor = Windows.UI.Colors.white;
-            //this.StatusBar.foregroundColor = Windows.UI.Colors.black;
-            //this.StatusBar.showAsync();
+            //Must register all pages
+            this.RegisterApplicationPages();
+
+            //Hide status bar on phones
+            if (Windows.UI.ViewManagement.StatusBar) {
+                this.StatusBar = Windows.UI.ViewManagement.StatusBar.getForCurrentView();
+                this.StatusBar.hideAsync();
+            }
+
+            //Initialize Engine
+            this.Engine = new App.ApplicationEngine(this.GetAppSetting("YouTubeApiKey"));
 
             //Define the default context so it can be accessed from WinJS bindings
             WinJS.Namespace.define("Context", this);
@@ -30,47 +32,67 @@ module App
             WinJS.Application.start();
         }
 
-        public Blackbox = {
-            Save: (key: string, value: any) =>
-            {
+        //#region Storage
+
+        public RoamingStorage = {
+            Save: (key: string, value: string) => {
                 Windows.Storage.ApplicationData.current.roamingSettings.values[key] = value;
             },
-            Retrieve: (key: string) =>
-            {
+            Retrieve: (key: string) => {
                 return Windows.Storage.ApplicationData.current.roamingSettings.values[key];
+            },
+            Delete: (key: string) => {
+                Windows.Storage.ApplicationData.current.roamingSettings.values.remove(key);
             },
         };
 
-        public AuntieDot = {
-            Save: (key: string, value: any) =>
-            {
+        public LocalStorage = {
+            Save: (key: string, value: string) => {
                 Windows.Storage.ApplicationData.current.localSettings.values[key] = value;
             },
-            Retrieve: (key: string) =>
-            {
+            Retrieve: (key: string) => {
                 return Windows.Storage.ApplicationData.current.localSettings.values[key];
             },
+            Delete: (key: string) => {
+                Windows.Storage.ApplicationData.current.localSettings.values.remove(key);
+            },
         };
+
+        public SessionStorage = {
+            Save: (key: string, value: string) => {
+                sessionStorage.setItem(key, value);
+            },
+            Retrieve: (key: string) => {
+                return sessionStorage.getItem(key);
+            },
+            Delete: (key: string) => {
+                sessionStorage.removeItem(key);
+            }
+        };
+
+        //#endregion
 
         //#region Variables
 
         //#region Objects and arrays
 
-        public CurrentPage: any;
+        public CurrentPage = ko.observable<App.IPage>();
 
-        public Resources = {
-            AppName: WinJS.Resources.getString("strings/AppName").value
-        };
+        public Engine: App.ApplicationEngine;
 
         public StatusBar: Windows.UI.ViewManagement.StatusBar;
+
+        private PageLoadingPromise: WinJS.Promise<IPage>;
+
+        private AppSettings: Object;
 
         //#endregion
 
         //#region Strings
 
-        public YourName = WinJS.Binding.as({
-            Value: "Test New Binding Setup"
-        });
+        public StringResources = {
+            AppName: WinJS.Resources.getString("strings/AppName").value
+        };
 
         //#endregion
 
@@ -78,37 +100,48 @@ module App
 
         //#region Utility functions
 
-        public SetCurrentPage = (page) =>
-        {
-            this.CurrentPage = page;
+        public GetAppSetting = (key: string) => {
+            return this.AppSettings[key];
         }
 
-        public ProcessDataboundFunctions(functions: Object)
-        {
-            Object.keys(functions).forEach((key) =>
-            {
-                var func = functions[key];
+        public RegisterApplicationPages() {
+            //All pages call ready, unload and updatelayout in the same way.
+            var defaultHandlers = {
+                ready: () => {
+                    this.PageLoadingPromise.then((pageController: App.IPage) => {
+                        this.CurrentPage(pageController);
+                        this.CurrentPage().HandlePageReady();
+                    });
+                },
+                unload: (args) => {
+                    if (this.CurrentPage()) {
+                        this.CurrentPage().HandlePageUnload(args);
+                    }
+                },
+                updateLayout: (el, args) => {
+                    if (this.CurrentPage()) {
+                        this.CurrentPage().HandlePageUpdateLayout(el, args);
+                    }
+                },
+            };
 
-                if (typeof func === "function")
-                {
-                    WinJS.Utilities.markSupportedForProcessing(functions[key]);
-                };
-            });
+            //Home page
+            WinJS.UI.Pages.define("/pages/home/home.html", _.extend(defaultHandlers, {
+                processed: (e, args) => {
+                    // In a larger app, we would use require.js to asynchronously load each page controller.
+                    // Since this is a small app, we're just including the controllers on the default page.
+                    this.PageLoadingPromise = new WinJS.Promise<IPage>((resolve, reject) => {
+                        App.HomeController.ProcessPage(resolve, reject, this);
+                    });
+                }
+            }));
         }
 
         //#endregion
 
         //#region WinJS application event handlers
 
-        private OnActivated = (args) =>
-        {
-            WinJS.Binding.bind(this.YourName, {
-                Value: () =>
-                {
-                    // This is an example of how to subscribe to WinJS bindings.
-                }
-            });
-
+        private OnActivated = (args) => {
             var execState = Windows.ApplicationModel.Activation.ApplicationExecutionState;
             var activeKind = Windows.ApplicationModel.Activation.ActivationKind;
             var activation = Windows.ApplicationModel.Activation;
@@ -121,16 +154,10 @@ module App
             //Ensure nav state exists
             nav.state = nav.state || {};
 
-            if (args.detail.kind === activeKind.launch)
-            {
-                if (args.detail.previousExecutionState !== execState.terminated)
-                {
-                    // # # #
+            if (args.detail.kind === activeKind.launch) {
+                if (args.detail.previousExecutionState !== execState.terminated) {
                     // TODO: Application has been newly launched. 
-                    // CONT: Check if user is logged in, navigate to home or login page accordingly.
-                    // # # #
-                } else
-                {
+                } else {
                     // TODO: This application has been reactivated from suspension.
                     // Restore application state here.
                 }
@@ -138,14 +165,18 @@ module App
                 // Optimize the load of the application and while the splash screen is shown, execute high priority scheduled work.
                 ui.disableAnimations();
 
-                var process = ui.processAll().then(() =>
-                {
+                var process = ui.processAll().then(() => {
                     return sched.requestDrain(sched.Priority.aboveNormal + 1);
-                }).then(() =>
-                {
+                }).then(() => {
+                    var url = new Windows.Foundation.Uri("ms-appx:///AppSettings.private.json");
+                    return Windows.Storage.StorageFile.getFileFromApplicationUriAsync(url).then((file) => {
+                        Windows.Storage.FileIO.readTextAsync(file).then((text) => {
+                            //this.AppSettings = JSON.parse(text);
+                        });
+                    });
+                }).then(() => {
                     return ui.enableAnimations();
-                }).then(() =>
-                {
+                }).then(() => {
                     //Attach this app to the nav state
                     nav.state.app = this;
 
@@ -157,8 +188,7 @@ module App
             };
         };
 
-        private OnCheckpoint = (args) =>
-        {
+        private OnCheckpoint = (args) => {
             // TODO: This application is about to be suspended. Save any state
             // that needs to persist across suspensions here. If you need to 
             // complete an asynchronous operation before your application is 
@@ -166,12 +196,8 @@ module App
         };
 
         //#endregion
-
-        //#region Event handlers
-
-        //#endregion
     }
 }
 
 //Your tax dollars at work!
-new App.Context();
+ko.applyBindings(new App.Context(), document.getElementById("contentHost"));
