@@ -1,3 +1,5 @@
+﻿/// <reference path="libraries/custom/applicationengine/applicationengine.ts" />
+/// <reference path="pages/home/home.ts" />
 /// <reference path="typings/custom/ipage.d.ts" />
 /// <reference path="typings/custom/windows.ui.viewmanagement.statusbar.d.ts" />
 /// <reference path="typings/winrt/winrt.d.ts" />
@@ -49,6 +51,7 @@ var App;
             this.CurrentPage = ko.observable();
             //#endregion
             //#region Strings
+            this.Test = ko.observable("This is a test");
             this.StringResources = {
                 AppName: WinJS.Resources.getString("strings/AppName").value
             };
@@ -56,7 +59,11 @@ var App;
             //#endregion
             //#region Utility functions
             this.GetAppSetting = function (key) {
-                return _this.AppSettings[key];
+                if (!_this.AppSettings) {
+                    _this.AppSettings = {};
+                }
+
+                return WinJS.Resources.getString("AppSettings.private/" + key).value;
             };
             //#endregion
             //#region WinJS application event handlers
@@ -69,56 +76,69 @@ var App;
                 var sched = WinJS.Utilities.Scheduler;
                 var ui = WinJS.UI;
                 var initialLocation = nav.location;
+
                 //Ensure nav state exists
                 nav.state = nav.state || {};
+
                 if (args.detail.kind === activeKind.launch) {
                     if (args.detail.previousExecutionState !== execState.terminated) {
+                        // TODO: Application has been newly launched.
+                    } else {
+                        // TODO: This application has been reactivated from suspension.
+                        // Restore application state here.
                     }
-                    else {
-                    }
+
                     // Optimize the load of the application and while the splash screen is shown, execute high priority scheduled work.
                     ui.disableAnimations();
+
                     var process = ui.processAll().then(function () {
                         return sched.requestDrain(sched.Priority.aboveNormal + 1);
                     }).then(function () {
-                        var url = new Windows.Foundation.Uri("ms-appx:///AppSettings.private.json");
-                        return Windows.Storage.StorageFile.getFileFromApplicationUriAsync(url).then(function (file) {
-                            Windows.Storage.FileIO.readTextAsync(file).then(function (text) {
-                                //this.AppSettings = JSON.parse(text);
-                            });
-                        });
+                        //var url = new Windows.Foundation.Uri("ms-appx:///AppSettings.private.json");
+                        //return Windows.Storage.StorageFile.getFileFromApplicationUriAsync(url).then((file) => {
+                        //    Windows.Storage.FileIO.readTextAsync(file).then((text) => {
+                        //        //this.AppSettings = JSON.parse(text);
+                        //    });
+                        //});
                     }).then(function () {
                         return ui.enableAnimations();
                     }).then(function () {
                         //Attach this app to the nav state
                         nav.state.app = _this;
+
                         //Navigate to last location or app home page
                         return nav.navigate(initialLocation || Application.navigator.home, nav.state);
                     });
+
                     args.setPromise(process);
                 }
                 ;
             };
             this.OnCheckpoint = function (args) {
                 // TODO: This application is about to be suspended. Save any state
-                // that needs to persist across suspensions here. If you need to 
-                // complete an asynchronous operation before your application is 
+                // that needs to persist across suspensions here. If you need to
+                // complete an asynchronous operation before your application is
                 // suspended, call args.setPromise().
             };
             //Set app event listeners
             WinJS.Application.addEventListener("activated", this.OnActivated);
             WinJS.Application.oncheckpoint = this.OnCheckpoint;
+
             //Must register all pages
             this.RegisterApplicationPages();
+
             //Hide status bar on phones
             if (Windows.UI.ViewManagement.StatusBar) {
                 this.StatusBar = Windows.UI.ViewManagement.StatusBar.getForCurrentView();
                 this.StatusBar.hideAsync();
             }
+
             //Initialize Engine
             this.Engine = new App.ApplicationEngine(this.GetAppSetting("YouTubeApiKey"));
+
             //Define the default context so it can be accessed from WinJS bindings
             WinJS.Namespace.define("Context", this);
+
             WinJS.Application.start();
         }
         Context.prototype.RegisterApplicationPages = function () {
@@ -128,6 +148,11 @@ var App;
                 ready: function () {
                     _this.PageLoadingPromise.then(function (pageController) {
                         _this.CurrentPage(pageController);
+
+                        //Bind Knockout
+                        ko.cleanNode(document.getElementById("contenthost"));
+                        ko.applyBindings(_this, document.getElementById("contenthost"));
+
                         _this.CurrentPage().HandlePageReady();
                     });
                 },
@@ -142,6 +167,7 @@ var App;
                     }
                 }
             };
+
             //Home page
             WinJS.UI.Pages.define("/pages/home/home.html", _.extend(defaultHandlers, {
                 processed: function (e, args) {
@@ -157,6 +183,6 @@ var App;
     })();
     App.Context = Context;
 })(App || (App = {}));
+
 //Your tax dollars at work!
-ko.applyBindings(new App.Context(), document.getElementById("contentHost"));
-//# sourceMappingURL=default.js.map
+new App.Context();
