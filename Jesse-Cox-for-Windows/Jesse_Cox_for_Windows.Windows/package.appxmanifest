@@ -1,47 +1,45 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest">
-
-  <Identity
-    Name="339eaf77-70e9-4b89-858e-d26b81032ffd"
-    Version="1.0.0.0"
-    Publisher="CN=Joshua Harms" />
-
+  <Identity Name="339eaf77-70e9-4b89-858e-d26b81032ffd" Version="1.0.0.0" Publisher="CN=Joshua Harms" />
   <Properties>
     <DisplayName>Jesse_Cox_for_Windows.Windows</DisplayName>
     <PublisherDisplayName>Joshua Harms</PublisherDisplayName>
     <Logo>images\storelogo.png</Logo>
   </Properties>
-
   <Prerequisites>
     <OSMinVersion>6.3.0</OSMinVersion>
     <OSMaxVersionTested>6.3.0</OSMaxVersionTested>
   </Prerequisites>
-
   <Resources>
     <Resource Language="x-generate" />
   </Resources>
-
   <Applications>
-    <Application 
-      Id="App"
-      StartPage="default.html">
-
-      <m2:VisualElements
-        DisplayName="Jesse_Cox_for_Windows.Windows"
-        Description="Jesse_Cox_for_Windows.Windows"
-        ForegroundText="light"
-        BackgroundColor="#464646"
-        Square150x150Logo="images\Logo.png"
-        Square30x30Logo="images\SmallLogo.png">
-
-        <m2:SplashScreen Image="images\splashscreen.png" />
-
+    <Application Id="App" StartPage="default.html">
+      <m2:VisualElements DisplayName="Jesse Cox for Windows (dev)" Square150x150Logo="Assets\Logo.png" Square30x30Logo="Assets\SmallLogo.png" Description="Space Butterfly" ForegroundText="light" BackgroundColor="#432966" ToastCapable="true">
+        <m2:LockScreen Notification="badge" BadgeLogo="Assets\BadgeLogo.png" />
+        <m2:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" Square70x70Logo="Assets\Square70x70Logo.png" Square310x310Logo="Assets\Square310x310Logo.png">
+          <m2:ShowNameOnTiles>
+            <m2:ShowOn Tile="square150x150Logo" />
+            <m2:ShowOn Tile="wide310x150Logo" />
+            <m2:ShowOn Tile="square310x310Logo" />
+          </m2:ShowNameOnTiles>
+        </m2:DefaultTile>
+        <m2:SplashScreen Image="Assets\SplashScreen.png" BackgroundColor="#432966" />
+        <m2:InitialRotationPreference>
+          <m2:Rotation Preference="landscape" />
+          <m2:Rotation Preference="landscapeFlipped" />
+        </m2:InitialRotationPreference>
       </m2:VisualElements>
+      <Extensions>
+        <Extension Category="windows.backgroundTasks" EntryPoint="Libraries/Custom/ApplicationEngine.js">
+          <BackgroundTasks>
+            <Task Type="timer" />
+          </BackgroundTasks>
+        </Extension>
+      </Extensions>
     </Application>
   </Applications>
-
   <Capabilities>
     <Capability Name="internetClient" />
   </Capabilities>
-
 </Package>

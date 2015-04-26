@@ -131,11 +131,8 @@
 }
 
 .phone .home .page-header .titlearea {
-    -ms-grid-column: 1;
-    margin-top: 37px;
-    margin-left: 24px;
+    margin:0;
     font-size: 28pt;
-    width: calc(100vw - 20px);
 }
 
 .phone .home .back-button {

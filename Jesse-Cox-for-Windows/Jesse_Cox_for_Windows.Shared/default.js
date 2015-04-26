@@ -48,7 +48,7 @@ var App;
             //#endregion
             //#region Utility functions
             this.CheckIfPhone = function () {
-                return (document.querySelector("#phone") && true) || (document.body.clientWidth < 850);
+                return (document.querySelector("#phone") && true) || (document.body && document.body.clientWidth < 850) || true;
             };
             this.PrepareGlobalExceptionHandler = function () {
                 WinJS.Promise.onerror = function (eventInfo) {

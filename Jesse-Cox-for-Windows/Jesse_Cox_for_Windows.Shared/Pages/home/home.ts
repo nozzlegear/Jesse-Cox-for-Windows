@@ -1,4 +1,7 @@
-﻿/// <reference path="../../typings/winjs/winjs.d.ts" />
+﻿/// <reference path="../../default.ts" />
+/// <reference path="../../typings/custom/ipage.d.ts" />
+/// <reference path="../../typings/knockout/knockout.d.ts" />
+/// <reference path="../../typings/winjs/winjs.d.ts" />
 /// <reference path="../../typings/custom/youtube.playlist.video.d.ts" />
 module App
 {
@@ -21,6 +24,7 @@ module App
         constructor(public Context: App.Context)
         {
             this.RefreshSources();
+            this.Videos.subscribe((newValue) => console.log("Videos changed"));
         }
 
         public HandlePageReady = () =>
@@ -35,6 +39,8 @@ module App
 
         public HandlePageUpdateLayout = (element: any, args: any) =>
         {
+            console.log("Updating");
+
             this.Context.IsPhone(this.Context.CheckIfPhone());
         }
 
@@ -43,16 +49,8 @@ module App
         //#region Objects and array
 
         // ListView
-        public listViewArray = ko.observableArray([
-            { text: "Josh", rating: ko.observable(4) },
-            { text: "Paul", rating: ko.observable(5) },
-            { text: "Chris", rating: ko.observable(3) },
-            { text: "Edgar", rating: ko.observable(2) }
-        ]);
 
         public Videos = ko.observableArray<YouTube.Playlist.Item>([]);
-
-        public Test = ko.observableArray<YouTube.Playlist.Item>([]);
 
         //#endregion
 
@@ -136,12 +134,7 @@ module App
             {
                 var success = (videos) =>
                 {
-                    WinJS.Namespace.define("Videos", {
-                        data: new WinJS.Binding.List(videos.items)
-                    });
-
-                    this.Videos(videos);
-                    this.Test(videos.items);
+                    this.Videos(videos.items);
                     resolve(Source.YouTube);
                 };
                 var error = (reason: string) =>

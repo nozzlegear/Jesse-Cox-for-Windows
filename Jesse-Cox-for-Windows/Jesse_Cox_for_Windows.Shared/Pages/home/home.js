@@ -1,4 +1,7 @@
-﻿/// <reference path="../../typings/winjs/winjs.d.ts" />
+/// <reference path="../../default.ts" />
+/// <reference path="../../typings/custom/ipage.d.ts" />
+/// <reference path="../../typings/knockout/knockout.d.ts" />
+/// <reference path="../../typings/winjs/winjs.d.ts" />
 /// <reference path="../../typings/custom/youtube.playlist.video.d.ts" />
 var App;
 (function (App) {
@@ -8,7 +11,6 @@ var App;
         Source[Source["Twitch"] = 1] = "Twitch";
         Source[Source["Cooptional"] = 2] = "Cooptional";
     })(Source || (Source = {}));
-
     var HomeController = (function () {
         function HomeController(Context) {
             var _this = this;
@@ -20,19 +22,13 @@ var App;
                 _this.Videos(null);
             };
             this.HandlePageUpdateLayout = function (element, args) {
+                console.log("Updating");
                 _this.Context.IsPhone(_this.Context.CheckIfPhone());
             };
             //#region Variables
             //#region Objects and array
             // ListView
-            this.listViewArray = ko.observableArray([
-                { text: "Josh", rating: ko.observable(4) },
-                { text: "Paul", rating: ko.observable(5) },
-                { text: "Chris", rating: ko.observable(3) },
-                { text: "Edgar", rating: ko.observable(2) }
-            ]);
             this.Videos = ko.observableArray([]);
-            this.Test = ko.observableArray([]);
             //#endregion
             //#region Booleans
             this.PageIsReady = ko.observable(false);
@@ -43,7 +39,6 @@ var App;
             this.RefreshSources = function () {
                 if (!_this.IsRefreshingSources()) {
                     _this.IsRefreshingSources(true);
-
                     // Create a generic 'done' handler for the three sources.
                     // Once they all report done we can hide the overlay.
                     var youtubeDone = false, youtubeError = false;
@@ -54,19 +49,15 @@ var App;
                             case 0 /* YouTube */:
                                 youtubeDone = true;
                                 break;
-
                             case 1 /* Twitch */:
                                 twitchDone = true;
                                 break;
-
                             case 2 /* Cooptional */:
                                 cooptionalDone = true;
                                 break;
                         }
-
                         if (youtubeDone && twitchDone && cooptionalDone) {
                             _this.IsRefreshingSources(false);
-                            // TODO: If errors, show a message dialog.
                         }
                         ;
                     };
@@ -75,20 +66,16 @@ var App;
                             case 0 /* YouTube */:
                                 youtubeError = true;
                                 break;
-
                             case 1 /* Twitch */:
                                 twitchError = true;
                                 break;
-
                             case 2 /* Cooptional */:
                                 cooptionalError = true;
                                 break;
                         }
-
                         //Always invoke the doneHandler to clear the overlay
                         doneHandler(source);
                     };
-
                     _this.RefreshYouTubeVideos().done(doneHandler, errorHandler);
                     _this.RefreshTwitch().done(doneHandler, errorHandler);
                     _this.RefreshCooptional().done(doneHandler, errorHandler);
@@ -98,22 +85,15 @@ var App;
             this.RefreshYouTubeVideos = function () {
                 var promise = new WinJS.Promise(function (resolve, reject) {
                     var success = function (videos) {
-                        WinJS.Namespace.define("Videos", {
-                            data: new WinJS.Binding.List(videos.items)
-                        });
-
-                        _this.Videos(videos);
-                        _this.Test(videos.items);
+                        _this.Videos(videos.items);
                         resolve(0 /* YouTube */);
                     };
                     var error = function (reason) {
                         console.log("Failed to retrieve YouTube videos. Reason: ", reason);
                         reject(0 /* YouTube */);
                     };
-
                     _this.Context.Engine.GetYouTubeVideos(10).done(success, error);
                 });
-
                 return promise;
             };
             this.RefreshTwitch = function () {
@@ -121,7 +101,6 @@ var App;
                     // TEMP
                     resolve(1 /* Twitch */);
                 });
-
                 return promise;
             };
             this.RefreshCooptional = function () {
@@ -129,13 +108,13 @@ var App;
                     // TEMP
                     resolve(2 /* Cooptional */);
                 });
-
                 return promise;
             };
             this.RefreshSources();
+            this.Videos.subscribe(function (newValue) { return console.log("Videos changed"); });
         }
         HomeController.ProcessPage = function (resolve, reject, context) {
-            // Using promises (resolve and reject) gives us a chance to asynchronously load any dependencies via requirejs,
+            // Using promises (resolve and reject) gives us a chance to asynchronously load any dependencies via requirejs, 
             // or even make a webrequest before loading the page.
             resolve(new HomeController(context));
         };
