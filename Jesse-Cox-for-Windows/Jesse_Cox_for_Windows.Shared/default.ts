@@ -19,6 +19,9 @@ module App
             WinJS.Application.addEventListener("activated", this.OnActivated);
             WinJS.Application.oncheckpoint = this.OnCheckpoint;
 
+            //WinJS promises will crash the app (by design) if there is no global error handlers
+            this.PrepareGlobalExceptionHandler();
+
             //Must register all pages
             this.RegisterApplicationPages();
 
@@ -34,9 +37,6 @@ module App
 
             //Define the default context so it can be accessed from WinJS bindings
             WinJS.Namespace.define("Context", this);
-
-            //Temp: Prepare sample data grid
-            this.PrepareSampleGrid();
 
             WinJS.Application.start();
         }
@@ -90,63 +90,19 @@ module App
 
         //#endregion
 
-        //#region Variables
-
-        //#region Objects and arrays
-
-        public CurrentPage = ko.observable<App.IPage>();
-
-        public Engine: App.ApplicationEngine;
-
-        public StatusBar: Windows.UI.ViewManagement.StatusBar;
-
-        private PageLoadingPromise: WinJS.Promise<IPage>;
-
-        private AppSettings: Object;
-
-        //#endregion
-
-        //#region Strings
-
-        public Test = ko.observable("This is a test");
-
-        public StringResources = {
-            AppName: WinJS.Resources.getString("strings/AppName").value
-        };
-
-        //#endregion
-
-        //#endregion
-
         //#region Utility functions
 
-        public PrepareSampleGrid = () =>
+        public CheckIfPhone = () =>
         {
-            var itemArray = [
-                { title: "Marvelous Mint", text: "Gelato", picture: "/images/fruits/60Mint.png" },
-                { title: "Succulent Strawberry", text: "Sorbet", picture: "/images/fruits/60Strawberry.png" },
-                { title: "Banana Blast", text: "Low-fat frozen yogurt", picture: "/images/fruits/60Banana.png" },
-                { title: "Lavish Lemon Ice", text: "Sorbet", picture: "/images/fruits/60Lemon.png" },
-                { title: "Creamy Orange", text: "Sorbet", picture: "/images/fruits/60Orange.png" },
-                { title: "Very Vanilla", text: "Ice Cream", picture: "/images/fruits/60Vanilla.png" },
-                { title: "Banana Blast", text: "Low-fat frozen yogurt", picture: "/images/fruits/60Banana.png" },
-                { title: "Lavish Lemon Ice", text: "Sorbet", picture: "/images/fruits/60Lemon.png" }
-            ];
+            return (document.querySelector("#phone") && true) || (document.body.clientWidth < 850);
+        };
 
-            var items = [];
-
-            // Generate 160 items
-            for (var i = 0; i < 20; i++)
+        private PrepareGlobalExceptionHandler = () =>
+        {
+            WinJS.Promise.onerror = (eventInfo) =>
             {
-                itemArray.forEach(function (item)
-                {
-                    items.push(item);
-                });
-            }
-
-            WinJS.Namespace.define("Sample.ListView", {
-                data: new WinJS.Binding.List(items)
-            });
+                //Swallow error.
+            };
         }
 
         public GetAppSetting = (key: string) =>
@@ -180,14 +136,16 @@ module App
                 },
                 unload: (args) =>
                 {
-                    if (this.CurrentPage())
+                    var currentPage = this.CurrentPage();
+                    if (currentPage && currentPage.HandlePageUnload)
                     {
                         this.CurrentPage().HandlePageUnload(args);
                     }
                 },
                 updateLayout: (el, args) =>
                 {
-                    if (this.CurrentPage())
+                    var currentPage = this.CurrentPage();
+                    if (currentPage && currentPage.HandlePageUpdateLayout)
                     {
                         this.CurrentPage().HandlePageUpdateLayout(el, args);
                     }
@@ -207,6 +165,40 @@ module App
                 }
             }));
         }
+
+        //#endregion
+
+        //#region Variables
+
+        //#region Objects and arrays
+
+        public CurrentPage = ko.observable<App.IPage>();
+
+        public Engine: App.ApplicationEngine;
+
+        public StatusBar: Windows.UI.ViewManagement.StatusBar;
+
+        private PageLoadingPromise: WinJS.Promise<IPage>;
+
+        private AppSettings: Object;
+
+        //#endregion
+
+        //#region Strings
+
+        public Test = ko.observable("This is a test");
+
+        public StringResources = {
+            AppName: WinJS.Resources.getString("strings/AppName").value
+        };
+
+        //#endregion
+
+        //#region Booleans
+
+        public IsPhone = ko.observable(this.CheckIfPhone());
+
+        //#endregion
 
         //#endregion
 
@@ -280,4 +272,4 @@ module App
 }
 
 //Your tax dollars at work!
-new App.Context();
+var context = new App.Context();

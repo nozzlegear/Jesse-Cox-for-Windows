@@ -1,4 +1,35 @@
-﻿.home section,
+﻿.yt-thumbnail {
+}
+
+    .yt-thumbnail > img {
+        max-height: 360px;
+        max-width: 480px;
+    }
+
+    .yt-thumbnail .info {
+        height: 45px;
+        position: absolute;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        padding: 0 5px;
+        color: #cccccc;
+        left: 0;
+    }
+
+        .yt-thumbnail .info.top {
+            top: 0;
+        }
+
+        .yt-thumbnail .info.bottom {
+            bottom: 4px;
+        }
+
+.black-transparent-bg {
+    background: rgba(25, 25, 25, .7);
+}
+
+.home section,
 .home header {
     margin: auto 60px;
 }
@@ -17,24 +48,77 @@
     }
 
 .home header {
-    display:-ms-grid;
-    -ms-grid-columns:auto 1fr;
-    padding-top:10px;
+    display: -ms-grid;
+    -ms-grid-columns: auto 1fr;
+    padding-top: 10px;
 }
 
-    .home header > titlearea {
-        -ms-grid-column:1;
-        margin:0;
+    .home header > .titlearea {
+        -ms-grid-column: 1;
+        margin: 0;
+        height: 100px;
+        line-height: 100px;
     }
 
     .home header > div.image-container {
-        -ms-grid-column:2;
-        text-align:right;
+        -ms-grid-column: 2;
+        text-align: right;
     }
 
         .home header > div.image-container > img {
-            max-height:100px;
+            max-height: 100px;
         }
+
+@media (max-width:825px) {
+    .home section,
+    .home header {
+        margin: auto 10px;
+    }
+
+    .win-listview > .win-vertical .win-container, 
+    .win-listview > .win-vertical .win-container.win-itemcontainer{
+        margin-bottom:30px;
+    }
+
+    .yt-thumbnail {
+        /*margin-bottom: 30px;*/
+    }
+
+        .yt-thumbnail > img {
+            max-height: none;
+            max-width: 100%;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .yt-thumbnail .info {
+            justify-content: center;
+            left: 0;
+            right: 0;
+        }
+
+            .yt-thumbnail .info.bottom {
+                bottom: 0px;
+            }
+}
+
+@media (max-width:700px) {
+    .home header > div.image-container > img {
+        display: none;
+    }
+
+    .home header > .titlearea {
+        font-size:36pt;
+        -ms-grid-column-span:2;
+        text-align:center;
+    }
+}
+
+@media (max-width:600px) {
+    .win-listview ._win-dynamic-containersize-0 .win-container {
+        height:auto;
+    }
+}
 
 /*
     # # #

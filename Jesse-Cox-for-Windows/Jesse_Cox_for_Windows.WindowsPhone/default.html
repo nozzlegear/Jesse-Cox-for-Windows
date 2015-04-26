@@ -11,8 +11,10 @@
     <script src="//Microsoft.Phone.WinJS.2.1/js/base.js"></script>
     <script src="//Microsoft.Phone.WinJS.2.1/js/ui.js"></script>
     <script src="libraries/knockout/knockout.js"></script>
+    <script src="libraries/knockout-winjs/knockout-winjs.js"></script>
     <script src="libraries/lodash/lodash.js"></script>
     <script src="libraries/custom/navigator.js"></script>
+    <script src="libraries/moment/moment.min.js"></script>
     <script src="Libraries/custom/ApplicationEngine/ApplicationEngine.js"></script>
 
     <!-- Jesse_Cox_for_Windows.Phone references -->
@@ -20,7 +22,7 @@
     <script src="Pages/home/home.js"></script>
     <script src="default.js"></script>
 </head>
-<body class="phone">
+<body id="phone" class="phone">
     <div id="contenthost"
          data-win-control="Application.PageControlNavigator"
          data-win-options="{home: '/pages/home/home.html'}"></div>

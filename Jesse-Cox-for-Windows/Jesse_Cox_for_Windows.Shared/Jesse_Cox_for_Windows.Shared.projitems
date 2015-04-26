@@ -22,8 +22,11 @@
     <Content Include="$(MSBuildThisFileDirectory)default.ts" />
     <Content Include="$(MSBuildThisFileDirectory)Libraries\custom\ApplicationEngine\ApplicationEngine.ts" />
     <Content Include="$(MSBuildThisFileDirectory)Libraries\custom\navigator.js" />
+    <Content Include="$(MSBuildThisFileDirectory)Libraries\knockout-winjs\knockout-winjs.js" />
     <Content Include="$(MSBuildThisFileDirectory)Libraries\knockout\knockout.js" />
     <Content Include="$(MSBuildThisFileDirectory)Libraries\lodash\lodash.js" />
+    <Content Include="$(MSBuildThisFileDirectory)Libraries\moment\moment-with-locales.min.js" />
+    <Content Include="$(MSBuildThisFileDirectory)Libraries\moment\moment.min.js" />
     <Content Include="$(MSBuildThisFileDirectory)Pages\home\home.css" />
     <Content Include="$(MSBuildThisFileDirectory)Pages\home\home.html" />
     <Content Include="$(MSBuildThisFileDirectory)Pages\home\home.js" />

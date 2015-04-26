@@ -9,49 +9,58 @@
 <body>
     <div class="home fragment">
         <header class="page-header" aria-label="Header content" role="banner">
-            <h1 class="titlearea win-type-ellipsis">
-                <span class="pagetitle" data-bind="text: StringResources.AppName">App Name</span>
+            <h1 class="titlearea win-type-ellipsis" data-bind="text: StringResources.AppName">
             </h1>
             <div class="image-container">
                 <img data-bind="attr: { src: '/images/cox' + (Math.round(Math.random() * 8) || 1) + '.png' }" />
             </div>
         </header>
-        <section class="page-section" aria-label="Main content" role="main">
-            <p>Content goes here.</p>
-            <!-- Simple template for the ListView instantiation  -->
-            <div class="smallListIconTextTemplate" data-win-control="WinJS.Binding.Template" style="display: none">
-                <div class="smallListIconTextItem">
-                    <img src="#" class="smallListIconTextItem-Image" data-win-bind="src: picture" />
-                    <div class="smallListIconTextItem-Detail">
-                        <h4 data-win-bind="textContent: title"></h4>
-                        <h6 data-win-bind="textContent: text"></h6>
+        <section class="page-section" aria-label="Main content" role="main" data-bind="with: CurrentPage">
+            <script type="text/html" id="videoTemplate">
+                <div style="position:relative;"
+                     class="listViewItem yt-thumbnail black-transparent-bg"
+                     data-bind="with: snippet, click: function (c, e) { window.location.href = 'https://www.youtube.com/watch/?v=' + c.snippet.resourceId.videoId }">
+                    <div class="black-transparent-bg info top">
+                        <span class="win-type-ellipsis" data-bind="text: title"></span>
+                    </div>
+                    <img data-bind="attr: { src: thumbnails.high.url, alt: title }" />
+                    <div class="black-transparent-bg info bottom">
+                        <span class="win-type-ellipsis" data-bind="text: moment(publishedAt).fromNow()"></span>
                     </div>
                 </div>
-            </div>
-
-            <!-- The declarative markup necesary for ListView instantiation -->
-            <div id="listView"
-                 class="win-selectionstylefilled"
-                 data-win-control="WinJS.UI.ListView"
-                 data-win-options="{
-                    itemDataSource: Sample.ListView.data.dataSource,
-                    itemTemplate: select('.smallListIconTextTemplate'),
-                    selectionMode: 'none',
-                    tapBehavior: 'none',
-                    layout: { type: WinJS.UI.GridLayout }}">
-            </div>
+            </script>
+            <!-- ko if: $root.IsPhone() -->
+            <div class="listView win-selectionstylefilled"
+                 style="height:100%; width:100%;"
+                 data-bind="winListView: {
+                 itemTemplate: 'videoTemplate',
+                 itemDataSource: Test,
+                 selectionMode: 'none',
+                 tapBehavior: 'none',
+                 layout: {type: WinJS.UI.ListLayout}}"></div>
+            <!-- /ko -->
+            <!-- ko ifnot: $root.IsPhone() -->
+            <div class="listView win-selectionstylefilled"
+                 style="height:100%; width:100%;"
+                 data-bind="winListView: {
+                 itemTemplate: 'videoTemplate',
+                 itemDataSource: Test,
+                 selectionMode: 'none',
+                 tapBehavior: 'none',
+                 layout: {type: WinJS.UI.GridLayout}}"></div>
+            <!-- /ko -->
         </section>
     </div>
     <!--#region AppBars -->
     <div data-win-control="WinJS.UI.AppBar" data-win-options="{placement: 'top'}">
         <button data-win-control="WinJS.UI.AppBarCommand"
                 data-win-options="{id: 'shwoop', label: 'Shwoop', icon: 'Go'}"
-                data-bind="click: console.log('Clicked!')"></button>
+                data-bind="click: function (c, e) { console.log('Clicked!') }"></button>
     </div>
     <div data-win-control="WinJS.UI.AppBar" data-win-options="{placement: 'bottom'}">
         <button data-win-control="WinJS.UI.AppBarCommand"
                 data-win-options="{id: 'refresh', label: 'Refresh', icon: 'refresh'}"
-                data-bind="click: console.log('Clicked!')"></button>
+                data-bind="click: function (c, e) { console.log('Clicked!') }"></button>
     </div>
     <!--#endregion -->
 </body>

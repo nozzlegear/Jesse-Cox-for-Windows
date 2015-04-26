@@ -15,6 +15,8 @@
   ],
   "devDependencies": {
     "knockout": "~3.3.0",
-    "lodash": "~3.7.0"
+    "lodash": "~3.7.0",
+    "knockout-winjs": "https://github.com/spankyj/knockout-winjs.git",
+    "moment": "~2.10.2"
   }
 }
