@@ -1,4 +1,6 @@
-﻿/// <reference path="../../../typings/winrt/winrt.d.ts" />
+﻿/// <reference path="../../../typings/custom/app.d.ts" />
+/// <reference path="../../../typings/custom/twitch.response.d.ts" />
+/// <reference path="../../../typings/winrt/winrt.d.ts" />
 declare module Windows
 {
     export module Web
@@ -11,17 +13,14 @@ module App
 {
     export class ApplicationEngine
     {
-        constructor(youtubeApiKey: string)
+        constructor(private YouTubeApiKey: string)
         {
-            this.YouTubeApiKey = youtubeApiKey;
             this.YouTubeUrl = this.YouTubeUrl += this.YouTubeApiKey;
         }
 
         //#region Variables
 
         //#region Strings
-
-        private YouTubeApiKey: string;
 
         private Referer: string = "https://spacebutterfly.nozzlegear.com";
 
@@ -68,6 +67,70 @@ module App
                 };
 
                 this.PrepareRequest(this.YouTubeUrl + "&maxResults=" + count).done(success, error);
+            });
+
+            return output;
+        };
+
+        public GetTwitchIsLive: () => WinJS.Promise<App.GetTwitchResponse> = () =>
+        {
+            var output = new WinJS.Promise<App.GetTwitchResponse>((resolve, reject) =>
+            {
+                var success = (json: string) =>
+                {
+                    var response: Twitch.Response = JSON.parse(json);
+                    var promiseResponse: App.GetTwitchResponse = { IsLive: false, StreamId: null };
+
+                    if(response.stream)
+                    {
+                        promiseResponse.IsLive = true;
+                        promiseResponse.StreamId = response.stream._id;  
+                    };
+
+                    resolve(promiseResponse);
+                };
+                var error = (response: any) =>
+                {
+                    console.log("Error retrieving Twitch status", response);
+                    reject("Response from Twitch did not indicate success.");
+                };
+
+                this.PrepareRequest(this.TwitchUrl).done(success, error);
+            });
+
+            return output;
+        };
+
+        public GetCooptionalIsLive: () => WinJS.Promise<App.GetTwitchResponse> = () =>
+        {
+            var output = new WinJS.Promise<App.GetTwitchResponse>((resolve, reject) =>
+            {
+                var success = (json: string) =>
+                {
+                    var response: Twitch.Response = JSON.parse(json);
+                    var promiseResponse: App.GetTwitchResponse = { IsLive: false, StreamId: null };
+
+                    if (response.stream)
+                    {
+                        var streamName = response.stream.channel.status;
+
+                        //We don't want to notify on TB's stream unless it's the podcast or lounge.
+                        if (streamName && streamName.toLowerCase().indexOf("optional") !== -1)
+                        {
+                            promiseResponse.IsLive = true;
+                            promiseResponse.StreamId = response.stream._id;
+                        };
+                    };
+
+                    resolve(promiseResponse);
+                };
+                var error = (response: any) =>
+                {
+                    console.log("Error retrieving Cooptional status", response);
+                    reject("Response from Twitch did not indicate success.");
+                };
+
+                this.PrepareRequest(this.CooptionalUrl).done(success, error);
             });
 
             return output;

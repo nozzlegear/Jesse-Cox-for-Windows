@@ -8,14 +8,25 @@
 </head>
 <body>
     <div class="home fragment">
+        <div style="height:100%; -ms-grid-row:2;" data-bind="visible: CurrentPage().IsRefreshingSources()">
+            <div style="height:100%; display:flex; align-items:center; justify-content:center;">
+                <div style="text-align:center;">
+                    <progress></progress>
+                    <p>Loading...</p>
+                </div>
+            </div>
+        </div>
         <header class="page-header" aria-label="Header content" role="banner">
-            <h1 class="titlearea win-type-ellipsis" data-bind="text: StringResources.AppName">
-            </h1>
-            <div class="image-container">
-                <img data-bind="attr: { src: '/images/cox' + (Math.round(Math.random() * 8) || 1) + '.png' }" />
+            <h1 class="titlearea win-type-ellipsis" data-bind="text: StringResources.AppName"></h1>
+            <div class="image-container" data-bind="with: CurrentPage">
+                <img style="display:none;" data-bind="visible: !TwitchIsLive() && !CooptionalIsLive(), attr: { src: '/images/cox' + (Math.round(Math.random() * 8) || 1) + '.png' }" />
+                <img src="/Images/live-now.png"
+                     style="display:none;"
+                     alt="Live now!"
+                     data-bind="visible: TwitchIsLive() || CooptionalIsLive(), click: HandleOpenLiveLink" />
             </div>
         </header>
-        <section class="page-section" aria-label="Main content" role="main" data-bind="with: CurrentPage">
+        <section class="page-section" aria-label="Main content" role="main" data-bind="with: CurrentPage, visible: !CurrentPage().IsRefreshingSources()">
             <script type="text/html" id="videoTemplate">
                 <div style="position:relative;"
                      class="listViewItem yt-thumbnail black-transparent-bg"
@@ -52,15 +63,40 @@
         </section>
     </div>
     <!--#region AppBars -->
-    <div data-win-control="WinJS.UI.AppBar" data-win-options="{placement: 'top'}">
+    <div id="topAppBar" 
+         data-win-control="WinJS.UI.AppBar" 
+         style="background-color:#432966;" 
+         data-win-options="{placement: 'top'}">
         <button data-win-control="WinJS.UI.AppBarCommand"
-                data-win-options="{id: 'shwoop', label: 'Shwoop', icon: 'Go'}"
-                data-bind="click: function (c, e) { console.log('Clicked!') }"></button>
+                data-win-options="{id: 'youtube', label: 'YouTube', icon: 'play'}"
+                data-bind="click: function (c, e) { window.location.href = 'https://www.youtube.com/user/OMFGcata'; }"></button>
+        <button data-win-control="WinJS.UI.AppBarCommand"
+                data-win-options="{id: 'twitter', label: 'Twitter', icon: 'url(/images/icons/twitter_icon.png)'}"
+                data-bind="click: function (c, e) { window.location.href = 'https://twitter.com/jessecox'; }"></button>
+        <button data-win-control="WinJS.UI.AppBarCommand"
+                data-win-options="{id: 'facebook', label: 'Facebook', icon: 'url(/images/icons/facebook_icon.png)'}"
+                data-bind="click: function (c, e) { window.location.href = 'https://www.facebook.com/TheJesseCox'; }"></button>
+        <button data-win-control="WinJS.UI.AppBarCommand"
+                data-win-options="{id: 'soundcloud', label: 'SoundCloud', icon: 'url(/images/icons/soundcloud_icon.png)'}"
+                data-bind="click: function (c, e) { window.location.href = 'https://soundcloud.com/coxncrendor'; }"></button>
+        <button data-win-control="WinJS.UI.AppBarCommand"
+                data-win-options="{id: 'reddit', label: 'Reddit', icon: 'url(/images/icons/reddit_icon.png)'}"
+                data-bind="click: function (c, e) { window.location.href = 'https://www.reddit.com/r/shaboozey'; }"></button>
+        <button data-win-control="WinJS.UI.AppBarCommand"
+                data-win-options="{id: 'gametee', label: 'Gametee', icon: 'url(/images/icons/shirt_icon.png)'}"
+                data-bind="click: function (c, e) { window.location.href = 'http://www.gametee.co.uk/category/jesse-cox'; }"></button>
     </div>
-    <div data-win-control="WinJS.UI.AppBar" data-win-options="{placement: 'bottom'}">
+    <div id="bottomAppBar" 
+         data-win-control="WinJS.UI.AppBar" 
+         style="background-color:#432966;" 
+         data-win-options="{placement: 'bottom'}" 
+         data-bind="with: CurrentPage">
         <button data-win-control="WinJS.UI.AppBarCommand"
                 data-win-options="{id: 'refresh', label: 'Refresh', icon: 'refresh'}"
-                data-bind="click: function (c, e) { console.log('Clicked!') }"></button>
+                data-bind="click: RefreshSources"></button>
+        <button data-win-control="WinJS.UI.AppBarCommand"
+                data-win-options="{id: 'settings', label: 'Settings', icon: 'settings'}"
+                data-bind="click: function (c, e) { WinJS.UI.SettingsFlyout.show() }"></button>
     </div>
     <!--#endregion -->
 </body>

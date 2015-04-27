@@ -22,8 +22,13 @@ module App
             //WinJS promises will crash the app (by design) if there is no global error handlers
             this.PrepareGlobalExceptionHandler();
 
-            //Must register all pages
+            //Must register all pages and settings
+            this.RegisterSettings();
             this.RegisterApplicationPages();
+
+            //Load notifications and subscribe to changes
+            this.LoadNotificationSettings();
+            this.RegisterKnockoutSubscriptions();
 
             //Hide status bar on phones
             if (Windows.UI.ViewManagement.StatusBar)
@@ -44,7 +49,7 @@ module App
         //#region Storage
 
         public RoamingStorage = {
-            Save: (key: string, value: string) =>
+            Save: (key: string, value: any) =>
             {
                 Windows.Storage.ApplicationData.current.roamingSettings.values[key] = value;
             },
@@ -59,7 +64,7 @@ module App
         };
 
         public LocalStorage = {
-            Save: (key: string, value: string) =>
+            Save: (key: string, value: any) =>
             {
                 Windows.Storage.ApplicationData.current.localSettings.values[key] = value;
             },
@@ -74,7 +79,7 @@ module App
         };
 
         public SessionStorage = {
-            Save: (key: string, value: string) =>
+            Save: (key: string, value: any) =>
             {
                 sessionStorage.setItem(key, value);
             },
@@ -107,15 +112,27 @@ module App
 
         public GetAppSetting = (key: string) =>
         {
-            if (!this.AppSettings)
-            {
-                this.AppSettings = {};
-            }
-
             return WinJS.Resources.getString("AppSettings.private/" + key).value;
         }
 
-        public RegisterApplicationPages()
+        private RegisterSettings = () =>
+        {
+            WinJS.Utilities.markSupportedForProcessing(this.HandleBeforeShowSettings);
+            WinJS.Utilities.markSupportedForProcessing(this.HandleBeforeHideSettings);
+
+            // Populate Settings pane and tie commands to Settings flyouts.
+            WinJS.Application.onsettings = function (e)
+            {
+                e.detail.applicationcommands = {
+                    "settingsPane": { href: "/pages/settings/settings.html", title: "General Settings" },
+                    "aboutPane": { href: "/pages/settings/about.html", title: "About" },
+                };
+
+                WinJS.UI.SettingsFlyout.populateSettings(e);
+            }
+        }
+
+        private RegisterApplicationPages()
         {
             //All pages call ready, unload and updatelayout in the same way.
             var defaultHandlers = {
@@ -152,6 +169,21 @@ module App
                 },
             };
 
+            //Automatically call the page's updateLayout when the window is resized
+            var resizeDebouncer;
+            window.onresize = (event) =>
+            {
+                if (resizeDebouncer != null)
+                {
+                    clearTimeout(resizeDebouncer);
+                };
+
+                resizeDebouncer = setTimeout(() =>
+                {
+                    defaultHandlers.updateLayout(window, event);
+                }, 300);
+            };
+
             //Home page
             WinJS.UI.Pages.define("/pages/home/home.html", _.extend(defaultHandlers, {
                 processed: (e, args) =>
@@ -164,6 +196,37 @@ module App
                     });
                 }
             }));
+        }
+
+        private LoadNotificationSettings = () =>
+        {
+            var settings = this.NotificationSettings;
+            var youtube = this.LocalStorage.Retrieve("NotifyYouTube");
+            var twitch = this.LocalStorage.Retrieve("NotifyTwitch");
+            var cooptional = this.LocalStorage.Retrieve("NotifyCooptional");
+            var isBoolean = (val: boolean) => typeof (val) === "boolean";
+
+            settings.NotifyYouTube(isBoolean(youtube) ? youtube : true);
+            settings.NotifyTwitch(isBoolean(twitch) ? twitch : true);
+            settings.NotifyCooptional(isBoolean(cooptional) ? cooptional : true);
+        };
+
+        private RegisterKnockoutSubscriptions = () =>
+        {
+            this.NotificationSettings.NotifyYouTube.subscribe((newValue) =>
+            {
+                this.LocalStorage.Save("NotifyYouTube", newValue);
+            });
+
+            this.NotificationSettings.NotifyTwitch.subscribe((newValue) =>
+            {
+                this.LocalStorage.Save("NotifyTwitch", newValue);
+            });
+
+            this.NotificationSettings.NotifyCooptional.subscribe((newValue) =>
+            {
+                this.LocalStorage.Save("NotifyCooptional", newValue);
+            });
         }
 
         //#endregion
@@ -180,13 +243,15 @@ module App
 
         private PageLoadingPromise: WinJS.Promise<IPage>;
 
-        private AppSettings: Object;
+        public NotificationSettings = {
+            NotifyYouTube: ko.observable(true),
+            NotifyTwitch: ko.observable(true),
+            NotifyCooptional: ko.observable(true),
+        }
 
         //#endregion
 
         //#region Strings
-
-        public Test = ko.observable("This is a test");
 
         public StringResources = {
             AppName: WinJS.Resources.getString("strings/AppName").value
@@ -220,6 +285,13 @@ module App
 
             if (args.detail.kind === activeKind.launch)
             {
+                var launchString = args.detail.arguments;
+
+                if (launchString)
+                {
+                    console.log("Launch string", launchString, "Exec state is running? ", args.detail.previousExecutionState === execState.running);
+                }
+
                 if (args.detail.previousExecutionState !== execState.terminated)
                 {
                     // TODO: Application has been newly launched. 
@@ -236,24 +308,13 @@ module App
                 {
                     return sched.requestDrain(sched.Priority.aboveNormal + 1);
                 }).then(() =>
-                    {
-                        //var url = new Windows.Foundation.Uri("ms-appx:///AppSettings.private.json");
-                        //return Windows.Storage.StorageFile.getFileFromApplicationUriAsync(url).then((file) => {
-                        //    Windows.Storage.FileIO.readTextAsync(file).then((text) => {
-                        //        //this.AppSettings = JSON.parse(text);
-                        //    });
-                        //});
-                    }).then(() =>
-                    {
-                        return ui.enableAnimations();
-                    }).then(() =>
-                    {
-                        //Attach this app to the nav state
-                        nav.state.app = this;
-
-                        //Navigate to last location or app home page
-                        return nav.navigate(initialLocation || Application.navigator.home, nav.state);
-                    });
+                {
+                    ui.enableAnimations();
+                }).then(() =>
+                {
+                    //Navigate to last location or app home page
+                    return nav.navigate(initialLocation || Application.navigator.home, nav.state);
+                });
 
                 args.setPromise(process);
             };
@@ -266,6 +327,16 @@ module App
             // complete an asynchronous operation before your application is 
             // suspended, call args.setPromise().
         };
+
+        public HandleBeforeShowSettings = (args) =>
+        {
+            ko.applyBindings(this, args.target);
+        }
+
+        public HandleBeforeHideSettings = (args) =>
+        {
+            ko.cleanNode(args.target);
+        }
 
         //#endregion
     }

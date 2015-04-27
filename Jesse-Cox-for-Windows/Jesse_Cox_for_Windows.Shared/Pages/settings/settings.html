@@ -1,0 +1,24 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Settings</title>
+</head>
+<body>
+    <div id="settingsPane"
+         data-win-control="WinJS.UI.SettingsFlyout"
+         data-win-options="{settingsCommandId: 'settings', width: 'narrow', onbeforeshow: Context.HandleBeforeShowSettings, onbeforehide: Context.HandleBeforeHideSettings}">
+        <div class="win-header" style="background-color:#432966">
+            <button type="button" class="win-backbutton" data-bind="click: function (c, e) { WinJS.UI.SettingsFlyout.show() }"></button>
+            <div class="win-label">General Settings</div>
+        </div>
+        <div class="win-content">
+            <div style="margin-bottom:15px;" 
+                 data-bind="winToggleSwitch: {checked: NotificationSettings.NotifyYouTube, title: 'Notify YouTube Upload', labelOff: 'Off', labelOn: 'On'}"></div>
+            <div style="margin-bottom:15px;"
+                 data-bind="winToggleSwitch: {checked:  NotificationSettings.NotifyTwitch, title: 'Notify Twitch Stream', labelOff: 'Off', labelOn: 'On'}"></div>
+            <div style="margin-bottom:15px;"
+                 data-bind="winToggleSwitch: {checked:  NotificationSettings.NotifyCooptional, title: 'Notify Co-optional Podcast Stream', labelOff: 'Off', labelOn: 'On'}"></div>
+        </div>
+    </div>
+</body>
+</html>

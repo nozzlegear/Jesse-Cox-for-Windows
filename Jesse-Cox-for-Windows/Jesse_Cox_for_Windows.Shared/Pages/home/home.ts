@@ -24,7 +24,6 @@ module App
         constructor(public Context: App.Context)
         {
             this.RefreshSources();
-            this.Videos.subscribe((newValue) => console.log("Videos changed"));
         }
 
         public HandlePageReady = () =>
@@ -60,17 +59,35 @@ module App
 
         public IsRefreshingSources = ko.observable(false);
 
+        public TwitchIsLive = ko.observable(false);
+
+        public CooptionalIsLive = ko.observable(false);
+
         //#endregion
 
         //#endregion
 
         //#region Utility functions
 
-        private RefreshSources = () =>
+        public RefreshSources = () =>
         {
             if (!this.IsRefreshingSources())
             {
                 this.IsRefreshingSources(true);
+
+                //Close app bars
+                var topAppBar = document.getElementById("topAppBar");
+                var bottomAppBar = document.getElementById("bottomAppBar");
+
+                if (topAppBar && topAppBar.winControl)
+                {
+                    topAppBar.winControl.hide();
+                };
+
+                if (bottomAppBar && bottomAppBar.winControl)
+                {
+                    bottomAppBar.winControl.hide();
+                };
 
                 // Create a generic 'done' handler for the three sources.
                 // Once they all report done we can hide the overlay.
@@ -153,8 +170,18 @@ module App
         {
             var promise = new WinJS.Promise<Source>((resolve, reject) =>
             {
-                // TEMP
-                resolve(Source.Twitch);
+                var success = (data: App.GetTwitchResponse) =>
+                {
+                    this.TwitchIsLive(data.IsLive);
+                    resolve(Source.Twitch);
+                };
+                var error = (reason: string) =>
+                {
+                    console.log("Failed to retrieve Twitch status. Reason: ", reason);
+                    reject(Source.Twitch);
+                };
+
+                this.Context.Engine.GetTwitchIsLive().done(success, error);
             });
 
             return promise;
@@ -164,11 +191,37 @@ module App
         {
             var promise = new WinJS.Promise<Source>((resolve, reject) =>
             {
-                // TEMP
-                resolve(Source.Cooptional);
+                var success = (data: App.GetTwitchResponse) =>
+                {
+                    this.CooptionalIsLive(data.IsLive);
+                    resolve(Source.Cooptional);
+                };
+                var error = (reason: string) =>
+                {
+                    console.log("Failed to retrieve Cooptional status. Reason: ", reason);
+                    reject(Source.Cooptional);
+                };
+
+                this.Context.Engine.GetCooptionalIsLive().done(success, error);
             });
 
             return promise;
+        };
+
+        //#endregion
+
+        //#region Event handlers
+
+        public HandleOpenLiveLink = (context, event) =>
+        {
+            if (this.TwitchIsLive())
+            {
+                window.location.href = "https://twitch.tv/shaboozey";
+            }
+            else if(this.CooptionalIsLive())
+            {
+                window.location.href = "https://twitch.tv/totalbiscuit";
+            }
         };
 
         //#endregion

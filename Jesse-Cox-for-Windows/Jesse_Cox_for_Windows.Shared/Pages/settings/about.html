@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>About</title>
+</head>
+<body>
+    <div id="aboutPane"
+         data-win-control="WinJS.UI.SettingsFlyout"
+         data-win-options="{settingsCommandId: 'about', width: 'narrow', onbeforeshow: Context.HandleBeforeShowSettings, onbeforehide: Context.HandleBeforeHideSettings}">
+        <div class="win-header" style="background-color:#432966">
+            <button type="button" class="win-backbutton" data-bind="click: function (c, e) { WinJS.UI.SettingsFlyout.show() }"></button>
+            <div class="win-label">About</div>
+        </div>
+        <div class="win-content">
+            <h4>About this app</h4>
+            <p>
+                This application was inspired by
+                <a href="https://chrome.google.com/webstore/detail/the-unofficial-jesse-cox/adlkpmmbilmffhbhcjookoeghgcaghfe">
+                    The Unofficial Jesse Cox Chrome Extension.
+                </a>
+                It was not commissioned by Jesse Cox, and he is not responsible for bugs or feature requests.
+            </p>
+            <p>
+                This app was developed by Joshua Harms, a web application and Windows consultant specializing in ASP.NET, TypeScript, and Knockout. Joshua writes and talks about building real, practical windows and web applications that businesses actually need.
+            </p>
+            <p>
+                You can read about developing apps for Windows and the web at <a href="https://nozzlegear.com">https://nozzlegear.com</a>,
+                or you can follow Joshua on Twitter at <a href="https://twitter.com/nozzlegear">@nozzlegear</a>.
+            </p>
+            <h4>Open Source</h4>
+            <p>
+                This application is open source! You can browse the code, take a look at current bug reports, submit pull requests and even fork it on
+                <a href="https://github.com/nozzlegear/jesse-cox-for-windows">
+                    GitHub.
+                </a>
+            </p>
+            <h4>Feedback</h4>
+            <p>
+                Have a feature suggestion? Running into an annoying bug? <a href="https://github.com/nozzlegear/jesse-cox-for-windows/issues">File an issue on GitHub</a>.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

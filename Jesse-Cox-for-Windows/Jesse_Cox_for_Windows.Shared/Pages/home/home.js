@@ -33,12 +33,25 @@ var App;
             //#region Booleans
             this.PageIsReady = ko.observable(false);
             this.IsRefreshingSources = ko.observable(false);
+            this.TwitchIsLive = ko.observable(false);
+            this.CooptionalIsLive = ko.observable(false);
             //#endregion
             //#endregion
             //#region Utility functions
             this.RefreshSources = function () {
                 if (!_this.IsRefreshingSources()) {
                     _this.IsRefreshingSources(true);
+                    //Close app bars
+                    var topAppBar = document.getElementById("topAppBar");
+                    var bottomAppBar = document.getElementById("bottomAppBar");
+                    if (topAppBar && topAppBar.winControl) {
+                        topAppBar.winControl.hide();
+                    }
+                    ;
+                    if (bottomAppBar && bottomAppBar.winControl) {
+                        bottomAppBar.winControl.hide();
+                    }
+                    ;
                     // Create a generic 'done' handler for the three sources.
                     // Once they all report done we can hide the overlay.
                     var youtubeDone = false, youtubeError = false;
@@ -98,20 +111,43 @@ var App;
             };
             this.RefreshTwitch = function () {
                 var promise = new WinJS.Promise(function (resolve, reject) {
-                    // TEMP
-                    resolve(1 /* Twitch */);
+                    var success = function (data) {
+                        _this.TwitchIsLive(data.IsLive);
+                        resolve(1 /* Twitch */);
+                    };
+                    var error = function (reason) {
+                        console.log("Failed to retrieve Twitch status. Reason: ", reason);
+                        reject(1 /* Twitch */);
+                    };
+                    _this.Context.Engine.GetTwitchIsLive().done(success, error);
                 });
                 return promise;
             };
             this.RefreshCooptional = function () {
                 var promise = new WinJS.Promise(function (resolve, reject) {
-                    // TEMP
-                    resolve(2 /* Cooptional */);
+                    var success = function (data) {
+                        _this.CooptionalIsLive(data.IsLive);
+                        resolve(2 /* Cooptional */);
+                    };
+                    var error = function (reason) {
+                        console.log("Failed to retrieve Cooptional status. Reason: ", reason);
+                        reject(2 /* Cooptional */);
+                    };
+                    _this.Context.Engine.GetCooptionalIsLive().done(success, error);
                 });
                 return promise;
             };
+            //#endregion
+            //#region Event handlers
+            this.HandleOpenLiveLink = function (context, event) {
+                if (_this.TwitchIsLive()) {
+                    window.location.href = "https://twitch.tv/shaboozey";
+                }
+                else if (_this.CooptionalIsLive()) {
+                    window.location.href = "https://twitch.tv/totalbiscuit";
+                }
+            };
             this.RefreshSources();
-            this.Videos.subscribe(function (newValue) { return console.log("Videos changed"); });
         }
         HomeController.ProcessPage = function (resolve, reject, context) {
             // Using promises (resolve and reject) gives us a chance to asynchronously load any dependencies via requirejs, 

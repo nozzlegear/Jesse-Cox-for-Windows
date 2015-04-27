@@ -1,22 +1,31 @@
 {
-  "name": "jesse-cox-for-windows",
-  "version": "1.0.0",
-  "homepage": "https://github.com/nozzlegear/jesse-cox-for-windows",
-  "authors": [
-    "Joshua Harms <joshua@nozzlegear.com>"
-  ],
-  "license": "MIT",
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "test",
-    "tests"
-  ],
-  "devDependencies": {
-    "knockout": "~3.3.0",
-    "lodash": "~3.7.0",
-    "knockout-winjs": "https://github.com/spankyj/knockout-winjs.git",
-    "moment": "~2.10.2"
-  }
+    "name": "jesse-cox-for-windows",
+    "version": "1.0.0",
+    "homepage": "https://github.com/nozzlegear/jesse-cox-for-windows",
+    "authors": [
+        "Joshua Harms <joshua@nozzlegear.com>"
+    ],
+    "license": "MIT",
+    "ignore": [
+        "**/.*",
+        "node_modules",
+        "bower_components",
+        "test",
+        "tests"
+    ],
+    "devDependencies": {
+        "knockout": "~3.3.0",
+        "lodash": "~3.7.0",
+        "knockout-winjs": "https://github.com/spankyj/knockout-winjs.git",
+        "moment": "~2.10.2",
+        "YeahToast": "https://github.com/Tboda/YeahToast.git"
+    },
+    "exportsOverride": {
+        "knockout-winjs": {
+            "": "js/knockout-winjs.js"
+        },
+        "YeahToast": { 
+            "": "lib/YeahToast.js"
+        }
+    }
 }
