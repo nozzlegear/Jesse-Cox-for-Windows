@@ -31,8 +31,9 @@
         </m2:InitialRotationPreference>
       </m2:VisualElements>
       <Extensions>
-        <Extension Category="windows.backgroundTasks" EntryPoint="Libraries/Custom/ApplicationEngine.js">
+        <Extension Category="windows.backgroundTasks" EntryPoint="Libraries/custom/ApplicationEngine/ApplicationEngine.js">
           <BackgroundTasks>
+            <Task Type="systemEvent" />
             <Task Type="timer" />
           </BackgroundTasks>
         </Extension>

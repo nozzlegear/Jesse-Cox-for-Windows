@@ -30,6 +30,9 @@ module App
             this.LoadNotificationSettings();
             this.RegisterKnockoutSubscriptions();
 
+            //Check for and register background task
+            this.RegisterBackgroundTasks();
+
             //Hide status bar on phones
             if (Windows.UI.ViewManagement.StatusBar)
             {
@@ -213,6 +216,7 @@ module App
 
         private RegisterKnockoutSubscriptions = () =>
         {
+            //Automatically save the notification settings when they change.
             this.NotificationSettings.NotifyYouTube.subscribe((newValue) =>
             {
                 this.LocalStorage.Save("NotifyYouTube", newValue);
@@ -227,6 +231,74 @@ module App
             {
                 this.LocalStorage.Save("NotifyCooptional", newValue);
             });
+        };
+
+        private RegisterBackgroundTasks = () =>
+        {
+            var timerTaskName = "backgroundSourceCheckTask";
+            var background = Windows.ApplicationModel.Background;
+            var taskIterator = background.BackgroundTaskRegistration.allTasks.first();
+            var taskRegistered = false;
+
+            //Iterate over tasks (can't use lodash) to see if it's registered
+            while (taskIterator.hasCurrent)
+            {
+                var task = taskIterator.current.value;
+
+                if (task.name === timerTaskName)
+                {
+                    taskRegistered = true;
+                    break;
+                }
+
+                taskIterator.moveNext();
+            }
+
+            if (!taskRegistered)
+            {
+                if (this.IsPhone())
+                {
+                    // TODO: Check app version. If it's a new version, Windows Phone needs to remove background access and request it again.
+                }
+
+                var success = (result: Windows.ApplicationModel.Background.BackgroundAccessStatus) =>
+                {
+                    if (result === background.BackgroundAccessStatus.denied)
+                    {
+                        /* Windows: Background activity and updates for this app are disabled by the user.
+                        *
+                        *  Windows Phone: The maximum number of background apps allowed across the system has been reached or background activity and updates for this app are disabled by the user. 
+                        */
+                        console.log("Background access denied.");
+                    }
+                    else if (result === background.BackgroundAccessStatus.unspecified)
+                    {
+                        // The user didn't explicitly disable or enable access and updates. 
+                        console.log("Background access denied, grant was unspecified.");
+                    }
+                    else
+                    {
+                        var builder = new background.BackgroundTaskBuilder();
+                        var timeTrigger = new background.TimeTrigger(15, false);
+                        var conditionTrigger = new background.SystemTrigger(background.SystemTriggerType.internetAvailable, false);
+
+                        builder.name = timerTaskName;
+                        builder.taskEntryPoint = "Libraries/custom/ApplicationEngine/ApplicationEngine.js";
+                        builder.setTrigger(conditionTrigger);
+                        builder.setTrigger(timeTrigger);
+
+                        var task = builder.register();
+
+                        console.log("Task registered.");
+                    };
+                };
+                var error = () =>
+                {
+                    // TODO: Display an error to the user telling them the app cannot give notifications. Should only show this error once per app version.
+                };
+
+                background.BackgroundExecutionManager.requestAccessAsync().done(success, error);
+            }
         }
 
         //#endregion
@@ -300,6 +372,8 @@ module App
                     // TODO: This application has been reactivated from suspension.
                     // Restore application state here.
                 }
+
+                console.log("Current page exists?", this.CurrentPage());
 
                 // Optimize the load of the application and while the splash screen is shown, execute high priority scheduled work.
                 ui.disableAnimations();

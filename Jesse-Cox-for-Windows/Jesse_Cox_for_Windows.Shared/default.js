@@ -21,7 +21,7 @@ var App;
                 },
                 Delete: function (key) {
                     Windows.Storage.ApplicationData.current.roamingSettings.values.remove(key);
-                },
+                }
             };
             this.LocalStorage = {
                 Save: function (key, value) {
@@ -32,7 +32,7 @@ var App;
                 },
                 Delete: function (key) {
                     Windows.Storage.ApplicationData.current.localSettings.values.remove(key);
-                },
+                }
             };
             this.SessionStorage = {
                 Save: function (key, value) {
@@ -65,7 +65,7 @@ var App;
                 WinJS.Application.onsettings = function (e) {
                     e.detail.applicationcommands = {
                         "settingsPane": { href: "/pages/settings/settings.html", title: "General Settings" },
-                        "aboutPane": { href: "/pages/settings/about.html", title: "About" },
+                        "aboutPane": { href: "/pages/settings/about.html", title: "About" }
                     };
                     WinJS.UI.SettingsFlyout.populateSettings(e);
                 };
@@ -81,6 +81,7 @@ var App;
                 settings.NotifyCooptional(isBoolean(cooptional) ? cooptional : true);
             };
             this.RegisterKnockoutSubscriptions = function () {
+                //Automatically save the notification settings when they change.
                 _this.NotificationSettings.NotifyYouTube.subscribe(function (newValue) {
                     _this.LocalStorage.Save("NotifyYouTube", newValue);
                 });
@@ -91,6 +92,53 @@ var App;
                     _this.LocalStorage.Save("NotifyCooptional", newValue);
                 });
             };
+            this.RegisterBackgroundTasks = function () {
+                var timerTaskName = "backgroundSourceCheckTask";
+                var background = Windows.ApplicationModel.Background;
+                var taskIterator = background.BackgroundTaskRegistration.allTasks.first();
+                var taskRegistered = false;
+                while (taskIterator.hasCurrent) {
+                    var task = taskIterator.current.value;
+                    if (task.name === timerTaskName) {
+                        taskRegistered = true;
+                        break;
+                    }
+                    taskIterator.moveNext();
+                }
+                if (!taskRegistered) {
+                    if (_this.IsPhone()) {
+                    }
+                    var success = function (result) {
+                        if (result === background.BackgroundAccessStatus.denied) {
+                            /* Windows: Background activity and updates for this app are disabled by the user.
+                            *
+                            *  Windows Phone: The maximum number of background apps allowed across the system has been reached or background activity and updates for this app are disabled by the user.
+                            */
+                            console.log("Background access denied.");
+                        }
+                        else if (result === background.BackgroundAccessStatus.unspecified) {
+                            // The user didn't explicitly disable or enable access and updates. 
+                            console.log("Background access denied, grant was unspecified.");
+                        }
+                        else {
+                            var builder = new background.BackgroundTaskBuilder();
+                            var timeTrigger = new background.TimeTrigger(15, false);
+                            var conditionTrigger = new background.SystemTrigger(background.SystemTriggerType.internetAvailable, false);
+                            builder.name = timerTaskName;
+                            builder.taskEntryPoint = "Libraries/custom/ApplicationEngine/ApplicationEngine.js";
+                            builder.setTrigger(conditionTrigger);
+                            builder.setTrigger(timeTrigger);
+                            var task = builder.register();
+                            console.log("Task registered.");
+                        }
+                        ;
+                    };
+                    var error = function () {
+                        // TODO: Display an error to the user telling them the app cannot give notifications. Should only show this error once per app version.
+                    };
+                    background.BackgroundExecutionManager.requestAccessAsync().done(success, error);
+                }
+            };
             //#endregion
             //#region Variables
             //#region Objects and arrays
@@ -98,7 +146,7 @@ var App;
             this.NotificationSettings = {
                 NotifyYouTube: ko.observable(true),
                 NotifyTwitch: ko.observable(true),
-                NotifyCooptional: ko.observable(true),
+                NotifyCooptional: ko.observable(true)
             };
             //#endregion
             //#region Strings
@@ -131,6 +179,7 @@ var App;
                     }
                     else {
                     }
+                    console.log("Current page exists?", _this.CurrentPage());
                     // Optimize the load of the application and while the splash screen is shown, execute high priority scheduled work.
                     ui.disableAnimations();
                     var process = ui.processAll().then(function () {
@@ -168,6 +217,8 @@ var App;
             //Load notifications and subscribe to changes
             this.LoadNotificationSettings();
             this.RegisterKnockoutSubscriptions();
+            //Check for and register background task
+            this.RegisterBackgroundTasks();
             //Hide status bar on phones
             if (Windows.UI.ViewManagement.StatusBar) {
                 this.StatusBar = Windows.UI.ViewManagement.StatusBar.getForCurrentView();
@@ -204,7 +255,7 @@ var App;
                     if (currentPage && currentPage.HandlePageUpdateLayout) {
                         _this.CurrentPage().HandlePageUpdateLayout(el, args);
                     }
-                },
+                }
             };
             //Automatically call the page's updateLayout when the window is resized
             var resizeDebouncer;
@@ -234,3 +285,4 @@ var App;
 })(App || (App = {}));
 //Your tax dollars at work!
 var context = new App.Context();
+//# sourceMappingURL=default.js.map
