@@ -57,6 +57,7 @@ module.exports = function (grunt) {
                 options: {
                     sourceMap: true,
                     removeComments: false, //Must be set to false, else the sourcemaps cannot be loaded.
+                    emitBOM: true,
                 }
             },
             compileSingle: {
@@ -64,6 +65,7 @@ module.exports = function (grunt) {
                 options: {
                     sourceMap: true,
                     removeComments: false, //Must be set to false, else the sourcemaps cannot be loaded.
+                    emitBOM: true,
                 }
             }
         },

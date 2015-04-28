@@ -1,4 +1,8 @@
-﻿var IsPhone = false;
+﻿// # # #
+// ȗțӻ⁸ Marker - DO NOT REMOVE - forces TypeScript to output files as UTF-8.
+// # # #
+
+var IsPhone = false;
 
 module App
 {
@@ -11,6 +15,8 @@ module App
 
             //Save the new status to local storage. If the app is running, it will try to register the task.
             App.Utilities.LocalStorage.Save("LockScreenStatus", "Added");
+
+            close();
         }
     }
 } 

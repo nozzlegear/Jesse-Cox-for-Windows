@@ -3,6 +3,11 @@
 /// <reference path="../../typings/knockout/knockout.d.ts" />
 /// <reference path="../../typings/winjs/winjs.d.ts" />
 /// <reference path="../../typings/custom/youtube.playlist.video.d.ts" />
+
+// # # #
+// ȗțӻ⁸ Marker - DO NOT REMOVE - forces TypeScript to output files as UTF-8.
+// # # #
+
 module App
 {
     export class HomeController implements App.IPage

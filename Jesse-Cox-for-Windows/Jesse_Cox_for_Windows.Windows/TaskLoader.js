@@ -3,5 +3,9 @@
 (function () {
     importScripts("ms-appx:///tasks/timer.js");
 
-    var task = new App.TimerTaskController();
+    var closeTask = function () {
+        close();
+    };
+
+    var task = new App.TimerTaskController(closeTask);
 }());

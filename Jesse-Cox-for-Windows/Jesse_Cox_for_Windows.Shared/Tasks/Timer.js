@@ -9,11 +9,12 @@ var App;
         return SourceCheckResult;
     })();
     var TimerTaskController = (function () {
-        function TimerTaskController() {
+        function TimerTaskController(FinalizeAndCloseTask) {
             var _this = this;
+            this.FinalizeAndCloseTask = FinalizeAndCloseTask;
             this.CheckYouTubeVideos = function () {
                 var promise = new WinJS.Promise(function (resolve, reject) {
-                    var output = new SourceCheckResult(App.Source.YouTube);
+                    var output = new SourceCheckResult(0 /* YouTube */);
                     var success = function (playlist) {
                         var video = playlist.items && playlist.items[0];
                         var storageKey = "LastYouTubeId";
@@ -40,7 +41,7 @@ var App;
             };
             this.CheckTwitch = function () {
                 var promise = new WinJS.Promise(function (resolve, reject) {
-                    var output = new SourceCheckResult(App.Source.Twitch);
+                    var output = new SourceCheckResult(1 /* Twitch */);
                     var success = function (data) {
                         var storageKey = "LastTwitchId";
                         if (data.IsLive) {
@@ -66,7 +67,7 @@ var App;
             };
             this.CheckCooptional = function () {
                 var promise = new WinJS.Promise(function (resolve, reject) {
-                    var output = new SourceCheckResult(App.Source.Cooptional);
+                    var output = new SourceCheckResult(2 /* Cooptional */);
                     var success = function (data) {
                         var storageKey = "LastCooptionalId";
                         if (data.IsLive) {
@@ -114,6 +115,7 @@ var App;
         //#endregion
         //#region Task functions
         TimerTaskController.prototype.CheckSources = function () {
+            var _this = this;
             // Create a generic 'done' handler for the three sources.
             // Once they all report done we can close the task.
             var youtubeResult;
@@ -121,13 +123,13 @@ var App;
             var cooptionalResult;
             var doneHandler = function (data) {
                 switch (data.Type) {
-                    case App.Source.YouTube:
+                    case 0 /* YouTube */:
                         youtubeResult = data;
                         break;
-                    case App.Source.Twitch:
+                    case 1 /* Twitch */:
                         twitchResult = data;
                         break;
-                    case App.Source.Cooptional:
+                    case 2 /* Cooptional */:
                         cooptionalResult = data;
                         break;
                 }
@@ -144,7 +146,7 @@ var App;
                     }
                     ;
                     // Finally, close the task.
-                    close();
+                    _this.FinalizeAndCloseTask();
                 }
                 ;
             };
@@ -161,3 +163,4 @@ var App;
     })();
     App.TimerTaskController = TimerTaskController;
 })(App || (App = {}));
+//# sourceMappingURL=Timer.js.map

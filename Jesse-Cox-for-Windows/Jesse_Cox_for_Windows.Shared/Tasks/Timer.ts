@@ -1,5 +1,9 @@
 ﻿/// <reference path="../libraries/custom/applicationengine/applicationengine.ts" />
 
+// # # #
+// ȗțӻ⁸ Marker - DO NOT REMOVE - forces TypeScript to output files as UTF-8.
+// # # #
+
 declare var Context: App.Context;
 declare var YeahToast: any;
 
@@ -19,7 +23,7 @@ module App
 
     export class TimerTaskController
     {
-        constructor()
+        constructor(private FinalizeAndCloseTask: () => void)
         {
             this.ImportScripts();
             this.ConfigureVariables();
@@ -107,7 +111,7 @@ module App
                     };
 
                     // Finally, close the task.
-                    close();
+                    this.FinalizeAndCloseTask();
                 };
             };
             var errorHandler = (data: SourceCheckResult) =>

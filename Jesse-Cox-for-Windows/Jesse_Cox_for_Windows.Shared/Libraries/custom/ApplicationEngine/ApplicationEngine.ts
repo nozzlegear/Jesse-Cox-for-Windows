@@ -1,6 +1,11 @@
 ﻿/// <reference path="../../../typings/custom/app.d.ts" />
 /// <reference path="../../../typings/custom/twitch.response.d.ts" />
 /// <reference path="../../../typings/winrt/winrt.d.ts" />
+
+// # # #
+// ȗțӻ⁸ Marker - DO NOT REMOVE - forces TypeScript to output files as UTF-8.
+// # # #
+
 declare module Windows
 {
     export module Web

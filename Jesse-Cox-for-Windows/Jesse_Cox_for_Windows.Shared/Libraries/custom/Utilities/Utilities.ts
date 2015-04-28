@@ -1,4 +1,11 @@
-﻿declare var IsPhone: boolean;
+﻿/// <reference path="../../../typings/winrt/winrt.d.ts" />
+/// <reference path="../../../typings/winjs/winjs.d.ts" />
+
+// # # #
+// ȗțӻ⁸ Marker - DO NOT REMOVE - forces TypeScript to output files as UTF-8.
+// # # #
+
+declare var IsPhone: boolean;
 
 module App
 {

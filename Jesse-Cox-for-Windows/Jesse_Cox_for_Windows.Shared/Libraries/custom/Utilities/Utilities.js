@@ -1,3 +1,5 @@
+/// <reference path="../../../typings/winrt/winrt.d.ts" />
+/// <reference path="../../../typings/winjs/winjs.d.ts" />
 var App;
 (function (App) {
     (function (Source) {
