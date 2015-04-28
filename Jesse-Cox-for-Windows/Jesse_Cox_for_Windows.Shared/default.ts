@@ -382,7 +382,7 @@ module App
                     //Page is already loaded. Launch the URL.
                     Windows.System.Launcher.launchUriAsync(new Windows.Foundation.Uri(launchString));
                 }
-                else if (args.detail.previousExecutionState !== execState.terminated)
+                else if (!this.CurrentPage())
                 {
                     //Application has been newly launched. Optimize the load of the application
                     ui.disableAnimations();
@@ -414,7 +414,7 @@ module App
                 }
                 else
                 {
-                    // Application was suspended.                                        
+                    console.log("Was terminated.");
                 };
             };
         };

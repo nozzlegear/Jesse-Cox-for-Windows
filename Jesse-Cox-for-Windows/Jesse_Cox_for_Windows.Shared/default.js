@@ -176,7 +176,7 @@ var App;
                         //Page is already loaded. Launch the URL.
                         Windows.System.Launcher.launchUriAsync(new Windows.Foundation.Uri(launchString));
                     }
-                    else if (args.detail.previousExecutionState !== execState.terminated) {
+                    else if (!_this.CurrentPage()) {
                         //Application has been newly launched. Optimize the load of the application
                         ui.disableAnimations();
                         var process = ui.processAll().then(function () {
@@ -199,6 +199,7 @@ var App;
                         args.setPromise(process);
                     }
                     else {
+                        console.log("Was terminated.");
                     }
                     ;
                 }
