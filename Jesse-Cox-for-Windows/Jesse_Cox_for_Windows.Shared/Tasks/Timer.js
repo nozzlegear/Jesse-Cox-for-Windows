@@ -13,7 +13,7 @@ var App;
             var _this = this;
             this.CheckYouTubeVideos = function () {
                 var promise = new WinJS.Promise(function (resolve, reject) {
-                    var output = new SourceCheckResult(0 /* YouTube */);
+                    var output = new SourceCheckResult(App.Source.YouTube);
                     var success = function (playlist) {
                         var video = playlist.items && playlist.items[0];
                         var storageKey = "LastYouTubeId";
@@ -40,9 +40,20 @@ var App;
             };
             this.CheckTwitch = function () {
                 var promise = new WinJS.Promise(function (resolve, reject) {
-                    var output = new SourceCheckResult(1 /* Twitch */);
+                    var output = new SourceCheckResult(App.Source.Twitch);
                     var success = function (data) {
-                        // TODO: Check if we've seen this stream before.
+                        var storageKey = "LastTwitchId";
+                        if (data.IsLive) {
+                            console.log("Twitch stream", data.StreamId);
+                            // Check if we've seen this video before.
+                            if (App.Utilities.LocalStorage.Retrieve(storageKey) !== data.StreamId) {
+                                output.ShouldShowToast = true;
+                                output.LaunchUrl = "https://twitch.tv/shaboozey";
+                                output.ToastThumbnail = "/images/live-now.png";
+                                //Save the video's id so we don't show more toasts for it in the future. 
+                                App.Utilities.LocalStorage.Save(storageKey, data.StreamId);
+                            }
+                        }
                         resolve(output);
                     };
                     var error = function (reason) {
@@ -55,9 +66,20 @@ var App;
             };
             this.CheckCooptional = function () {
                 var promise = new WinJS.Promise(function (resolve, reject) {
-                    var output = new SourceCheckResult(2 /* Cooptional */);
+                    var output = new SourceCheckResult(App.Source.Cooptional);
                     var success = function (data) {
-                        // TODO: Check if we've seen this podcast before
+                        var storageKey = "LastCooptionalId";
+                        if (data.IsLive) {
+                            console.log("Cooptional stream", data.StreamId);
+                            // Check if we've seen this video before.
+                            if (App.Utilities.LocalStorage.Retrieve(storageKey) !== data.StreamId) {
+                                output.ShouldShowToast = true;
+                                output.LaunchUrl = "https://twitch.tv/totalbiscuit";
+                                output.ToastThumbnail = "/images/live-now.png";
+                                //Save the video's id so we don't show more toasts for it in the future. 
+                                App.Utilities.LocalStorage.Save(storageKey, data.StreamId);
+                            }
+                        }
                         resolve(output);
                     };
                     var error = function (reason) {
@@ -99,13 +121,13 @@ var App;
             var cooptionalResult;
             var doneHandler = function (data) {
                 switch (data.Type) {
-                    case 0 /* YouTube */:
+                    case App.Source.YouTube:
                         youtubeResult = data;
                         break;
-                    case 1 /* Twitch */:
+                    case App.Source.Twitch:
                         twitchResult = data;
                         break;
-                    case 2 /* Cooptional */:
+                    case App.Source.Cooptional:
                         cooptionalResult = data;
                         break;
                 }
@@ -139,4 +161,3 @@ var App;
     })();
     App.TimerTaskController = TimerTaskController;
 })(App || (App = {}));
-//# sourceMappingURL=Timer.js.map

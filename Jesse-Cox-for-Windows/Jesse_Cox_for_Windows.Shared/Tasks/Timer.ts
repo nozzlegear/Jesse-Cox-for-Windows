@@ -169,8 +169,24 @@ module App
                 var output = new SourceCheckResult(App.Source.Twitch);
                 var success = (data: App.GetTwitchResponse) =>
                 {
-                    // TODO: Check if we've seen this stream before.
-                    
+                    var storageKey = "LastTwitchId";
+
+                    if (data.IsLive)
+                    {
+                        console.log("Twitch stream", data.StreamId);
+
+                        // Check if we've seen this video before.
+                        if (App.Utilities.LocalStorage.Retrieve(storageKey) !== data.StreamId)
+                        {
+                            output.ShouldShowToast = true;
+                            output.LaunchUrl = "https://twitch.tv/shaboozey";
+                            output.ToastThumbnail = "/images/live-now.png";
+
+                            //Save the video's id so we don't show more toasts for it in the future. 
+                            App.Utilities.LocalStorage.Save(storageKey, data.StreamId);
+                        }
+                    }
+
                     resolve(output);
                 };
                 var error = (reason: string) =>
@@ -192,7 +208,23 @@ module App
                 var output = new SourceCheckResult(App.Source.Cooptional)
                 var success = (data: App.GetTwitchResponse) =>
                 {
-                    // TODO: Check if we've seen this podcast before
+                    var storageKey = "LastCooptionalId";
+
+                    if (data.IsLive)
+                    {
+                        console.log("Cooptional stream", data.StreamId);
+
+                        // Check if we've seen this video before.
+                        if (App.Utilities.LocalStorage.Retrieve(storageKey) !== data.StreamId)
+                        {
+                            output.ShouldShowToast = true;
+                            output.LaunchUrl = "https://twitch.tv/totalbiscuit";
+                            output.ToastThumbnail = "/images/live-now.png";
+
+                            //Save the video's id so we don't show more toasts for it in the future. 
+                            App.Utilities.LocalStorage.Save(storageKey, data.StreamId);
+                        }
+                    }
 
                     resolve(output);
                 };
