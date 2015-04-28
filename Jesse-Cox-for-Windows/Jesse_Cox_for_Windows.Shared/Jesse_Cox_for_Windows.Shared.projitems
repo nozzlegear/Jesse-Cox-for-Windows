@@ -27,6 +27,8 @@
     <Content Include="$(MSBuildThisFileDirectory)default.ts" />
     <Content Include="$(MSBuildThisFileDirectory)Libraries\custom\ApplicationEngine\ApplicationEngine.ts" />
     <Content Include="$(MSBuildThisFileDirectory)Libraries\custom\navigator.js" />
+    <Content Include="$(MSBuildThisFileDirectory)Libraries\custom\Utilities\Utilities.js" />
+    <Content Include="$(MSBuildThisFileDirectory)Libraries\custom\Utilities\Utilities.ts" />
     <Content Include="$(MSBuildThisFileDirectory)Libraries\knockout-winjs\knockout-winjs.js" />
     <Content Include="$(MSBuildThisFileDirectory)Libraries\knockout\knockout.js" />
     <Content Include="$(MSBuildThisFileDirectory)Libraries\lodash\lodash.js" />
@@ -40,6 +42,9 @@
     <Content Include="$(MSBuildThisFileDirectory)Pages\home\home.ts" />
     <Content Include="$(MSBuildThisFileDirectory)Pages\settings\about.html" />
     <Content Include="$(MSBuildThisFileDirectory)Pages\settings\settings.html" />
+    <Content Include="$(MSBuildThisFileDirectory)Tasks\Timer.js" />
+    <Content Include="$(MSBuildThisFileDirectory)Tasks\Timer.js.map" />
+    <Content Include="$(MSBuildThisFileDirectory)Tasks\Timer.ts" />
     <Content Include="$(MSBuildThisFileDirectory)typings\custom\App.d.ts" />
     <Content Include="$(MSBuildThisFileDirectory)typings\custom\IStorageContainer.d.ts" />
     <Content Include="$(MSBuildThisFileDirectory)typings\custom\twitch.response.d.ts" />

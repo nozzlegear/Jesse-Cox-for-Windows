@@ -41,62 +41,13 @@ module App
             }
 
             //Initialize Engine
-            this.Engine = new App.ApplicationEngine(this.GetAppSetting("YouTubeApiKey"));
+            this.Engine = new App.ApplicationEngine(App.Utilities.GetAppSetting("YouTubeApiKey"));
 
             //Define the default context so it can be accessed from WinJS bindings
             WinJS.Namespace.define("Context", this);
 
             WinJS.Application.start();
         }
-
-        //#region Storage
-
-        public RoamingStorage = {
-            Save: (key: string, value: any) =>
-            {
-                Windows.Storage.ApplicationData.current.roamingSettings.values[key] = value;
-            },
-            Retrieve: (key: string) =>
-            {
-                return Windows.Storage.ApplicationData.current.roamingSettings.values[key];
-            },
-            Delete: (key: string) =>
-            {
-                Windows.Storage.ApplicationData.current.roamingSettings.values.remove(key);
-            },
-        };
-
-        public LocalStorage = {
-            Save: (key: string, value: any) =>
-            {
-                Windows.Storage.ApplicationData.current.localSettings.values[key] = value;
-            },
-            Retrieve: (key: string) =>
-            {
-                return Windows.Storage.ApplicationData.current.localSettings.values[key];
-            },
-            Delete: (key: string) =>
-            {
-                Windows.Storage.ApplicationData.current.localSettings.values.remove(key);
-            },
-        };
-
-        public SessionStorage = {
-            Save: (key: string, value: any) =>
-            {
-                sessionStorage.setItem(key, value);
-            },
-            Retrieve: (key: string) =>
-            {
-                return sessionStorage.getItem(key);
-            },
-            Delete: (key: string) =>
-            {
-                sessionStorage.removeItem(key);
-            }
-        };
-
-        //#endregion
 
         //#region Utility functions
 
@@ -111,11 +62,6 @@ module App
             {
                 //Swallow error.
             };
-        }
-
-        public GetAppSetting = (key: string) =>
-        {
-            return WinJS.Resources.getString("AppSettings.private/" + key).value;
         }
 
         private RegisterSettings = () =>
@@ -204,9 +150,9 @@ module App
         private LoadNotificationSettings = () =>
         {
             var settings = this.NotificationSettings;
-            var youtube = this.LocalStorage.Retrieve("NotifyYouTube");
-            var twitch = this.LocalStorage.Retrieve("NotifyTwitch");
-            var cooptional = this.LocalStorage.Retrieve("NotifyCooptional");
+            var youtube = App.Utilities.LocalStorage.Retrieve("NotifyYouTube");
+            var twitch = App.Utilities.LocalStorage.Retrieve("NotifyTwitch");
+            var cooptional = App.Utilities.LocalStorage.Retrieve("NotifyCooptional");
             var isBoolean = (val: boolean) => typeof (val) === "boolean";
 
             settings.NotifyYouTube(isBoolean(youtube) ? youtube : true);
@@ -219,17 +165,17 @@ module App
             //Automatically save the notification settings when they change.
             this.NotificationSettings.NotifyYouTube.subscribe((newValue) =>
             {
-                this.LocalStorage.Save("NotifyYouTube", newValue);
+                App.Utilities.LocalStorage.Save("NotifyYouTube", newValue);
             });
 
             this.NotificationSettings.NotifyTwitch.subscribe((newValue) =>
             {
-                this.LocalStorage.Save("NotifyTwitch", newValue);
+                App.Utilities.LocalStorage.Save("NotifyTwitch", newValue);
             });
 
             this.NotificationSettings.NotifyCooptional.subscribe((newValue) =>
             {
-                this.LocalStorage.Save("NotifyCooptional", newValue);
+                App.Utilities.LocalStorage.Save("NotifyCooptional", newValue);
             });
         };
 
@@ -248,6 +194,7 @@ module App
                 if (task.name === timerTaskName)
                 {
                     taskRegistered = true;
+                    console.log("Task exists.");
                     break;
                 }
 
@@ -283,7 +230,7 @@ module App
                         var conditionTrigger = new background.SystemTrigger(background.SystemTriggerType.internetAvailable, false);
 
                         builder.name = timerTaskName;
-                        builder.taskEntryPoint = "Libraries/custom/ApplicationEngine/ApplicationEngine.js";
+                        builder.taskEntryPoint = "Tasks\\Timer.js";
                         builder.setTrigger(conditionTrigger);
                         builder.setTrigger(timeTrigger);
 
@@ -359,38 +306,50 @@ module App
             {
                 var launchString = args.detail.arguments;
 
-                if (launchString)
+                if (launchString && this.CurrentPage())
                 {
-                    console.log("Launch string", launchString, "Exec state is running? ", args.detail.previousExecutionState === execState.running);
+                    //Page is already loaded. Launch the URL.
+                    Windows.System.Launcher.launchUriAsync(new Windows.Foundation.Uri(launchString));
                 }
-
-                if (args.detail.previousExecutionState !== execState.terminated)
+                else
                 {
-                    // TODO: Application has been newly launched. 
-                } else
-                {
-                    // TODO: This application has been reactivated from suspension.
-                    // Restore application state here.
-                }
+                    if (args.detail.previousExecutionState !== execState.terminated)
+                    {
+                        // TODO: Application has been newly launched. 
+                    } else
+                    {
+                        // TODO: This application has been reactivated from suspension.
+                        // Restore application state here.
+                    }
 
-                console.log("Current page exists?", this.CurrentPage());
+                    // Optimize the load of the application and while the splash screen is shown, execute high priority scheduled work.
+                    ui.disableAnimations();
 
-                // Optimize the load of the application and while the splash screen is shown, execute high priority scheduled work.
-                ui.disableAnimations();
+                    var process = ui.processAll().then(() =>
+                    {
+                        return sched.requestDrain(sched.Priority.aboveNormal + 1);
+                    }).then(() =>
+                    {
+                        ui.enableAnimations();
+                    }).then(() =>
+                    {
+                        if (launchString)
+                        {
+                            try {
+                                Windows.System.Launcher.launchUriAsync(new Windows.Foundation.Uri(launchString));
+                            }
+                            catch (e)
+                            {
+                                console.log("Could not launch from launch string.", e);
+                            };
+                        }
 
-                var process = ui.processAll().then(() =>
-                {
-                    return sched.requestDrain(sched.Priority.aboveNormal + 1);
-                }).then(() =>
-                {
-                    ui.enableAnimations();
-                }).then(() =>
-                {
-                    //Navigate to last location or app home page
-                    return nav.navigate(initialLocation || Application.navigator.home, nav.state);
-                });
+                        //Navigate to last location or app home page
+                        return nav.navigate(initialLocation || Application.navigator.home, nav.state);
+                    });
 
-                args.setPromise(process);
+                    args.setPromise(process);
+                };
             };
         };
 

@@ -26,7 +26,7 @@
         </m3:InitialRotationPreference>
       </m3:VisualElements>
       <Extensions>
-        <Extension Category="windows.backgroundTasks" StartPage="Libraries/custom/ApplicationEngine/ApplicationEngine.js">
+        <Extension Category="windows.backgroundTasks" StartPage="tasks\timer.js">
           <BackgroundTasks>
             <Task Type="timer" />
           </BackgroundTasks>

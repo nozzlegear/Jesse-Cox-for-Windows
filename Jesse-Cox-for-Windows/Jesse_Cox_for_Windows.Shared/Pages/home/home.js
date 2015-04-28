@@ -5,12 +5,6 @@
 /// <reference path="../../typings/custom/youtube.playlist.video.d.ts" />
 var App;
 (function (App) {
-    var Source;
-    (function (Source) {
-        Source[Source["YouTube"] = 0] = "YouTube";
-        Source[Source["Twitch"] = 1] = "Twitch";
-        Source[Source["Cooptional"] = 2] = "Cooptional";
-    })(Source || (Source = {}));
     var HomeController = (function () {
         function HomeController(Context) {
             var _this = this;
@@ -59,13 +53,13 @@ var App;
                     var cooptionalDone = false, cooptionalError = false;
                     var doneHandler = function (source) {
                         switch (source) {
-                            case 0 /* YouTube */:
+                            case App.Source.YouTube:
                                 youtubeDone = true;
                                 break;
-                            case 1 /* Twitch */:
+                            case App.Source.Twitch:
                                 twitchDone = true;
                                 break;
-                            case 2 /* Cooptional */:
+                            case App.Source.Cooptional:
                                 cooptionalDone = true;
                                 break;
                         }
@@ -76,13 +70,13 @@ var App;
                     };
                     var errorHandler = function (source) {
                         switch (source) {
-                            case 0 /* YouTube */:
+                            case App.Source.YouTube:
                                 youtubeError = true;
                                 break;
-                            case 1 /* Twitch */:
+                            case App.Source.Twitch:
                                 twitchError = true;
                                 break;
-                            case 2 /* Cooptional */:
+                            case App.Source.Cooptional:
                                 cooptionalError = true;
                                 break;
                         }
@@ -99,11 +93,11 @@ var App;
                 var promise = new WinJS.Promise(function (resolve, reject) {
                     var success = function (videos) {
                         _this.Videos(videos.items);
-                        resolve(0 /* YouTube */);
+                        resolve(App.Source.YouTube);
                     };
                     var error = function (reason) {
                         console.log("Failed to retrieve YouTube videos. Reason: ", reason);
-                        reject(0 /* YouTube */);
+                        reject(App.Source.YouTube);
                     };
                     _this.Context.Engine.GetYouTubeVideos(10).done(success, error);
                 });
@@ -113,11 +107,11 @@ var App;
                 var promise = new WinJS.Promise(function (resolve, reject) {
                     var success = function (data) {
                         _this.TwitchIsLive(data.IsLive);
-                        resolve(1 /* Twitch */);
+                        resolve(App.Source.Twitch);
                     };
                     var error = function (reason) {
                         console.log("Failed to retrieve Twitch status. Reason: ", reason);
-                        reject(1 /* Twitch */);
+                        reject(App.Source.Twitch);
                     };
                     _this.Context.Engine.GetTwitchIsLive().done(success, error);
                 });
@@ -127,11 +121,11 @@ var App;
                 var promise = new WinJS.Promise(function (resolve, reject) {
                     var success = function (data) {
                         _this.CooptionalIsLive(data.IsLive);
-                        resolve(2 /* Cooptional */);
+                        resolve(App.Source.Cooptional);
                     };
                     var error = function (reason) {
                         console.log("Failed to retrieve Cooptional status. Reason: ", reason);
-                        reject(2 /* Cooptional */);
+                        reject(App.Source.Cooptional);
                     };
                     _this.Context.Engine.GetCooptionalIsLive().done(success, error);
                 });
@@ -158,4 +152,3 @@ var App;
     })();
     App.HomeController = HomeController;
 })(App || (App = {}));
-//# sourceMappingURL=home.js.map

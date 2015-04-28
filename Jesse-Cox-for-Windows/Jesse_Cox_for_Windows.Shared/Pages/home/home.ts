@@ -5,13 +5,6 @@
 /// <reference path="../../typings/custom/youtube.playlist.video.d.ts" />
 module App
 {
-    enum Source
-    {
-        YouTube,
-        Twitch,
-        Cooptional
-    }
-
     export class HomeController implements App.IPage
     {
         static ProcessPage = (resolve: (pageController: App.IPage) => void, reject: (reason: string) => void, context: App.Context) =>
@@ -98,15 +91,15 @@ module App
                 {
                     switch (source)
                     {
-                        case Source.YouTube:
+                        case App.Source.YouTube:
                             youtubeDone = true;
                             break;
 
-                        case Source.Twitch:
+                        case App.Source.Twitch:
                             twitchDone = true;
                             break;
 
-                        case Source.Cooptional:
+                        case App.Source.Cooptional:
                             cooptionalDone = true;
                             break;
                     }
@@ -122,15 +115,15 @@ module App
                 {
                     switch (source)
                     {
-                        case Source.YouTube:
+                        case App.Source.YouTube:
                             youtubeError = true;
                             break;
 
-                        case Source.Twitch:
+                        case App.Source.Twitch:
                             twitchError = true;
                             break;
 
-                        case Source.Cooptional:
+                        case App.Source.Cooptional:
                             cooptionalError = true;
                             break;
                     }
@@ -152,12 +145,12 @@ module App
                 var success = (videos) =>
                 {
                     this.Videos(videos.items);
-                    resolve(Source.YouTube);
+                    resolve(App.Source.YouTube);
                 };
                 var error = (reason: string) =>
                 {
                     console.log("Failed to retrieve YouTube videos. Reason: ", reason)
-                    reject(Source.YouTube);
+                    reject(App.Source.YouTube);
                 };
 
                 this.Context.Engine.GetYouTubeVideos(10).done(success, error);
@@ -173,12 +166,12 @@ module App
                 var success = (data: App.GetTwitchResponse) =>
                 {
                     this.TwitchIsLive(data.IsLive);
-                    resolve(Source.Twitch);
+                    resolve(App.Source.Twitch);
                 };
                 var error = (reason: string) =>
                 {
                     console.log("Failed to retrieve Twitch status. Reason: ", reason);
-                    reject(Source.Twitch);
+                    reject(App.Source.Twitch);
                 };
 
                 this.Context.Engine.GetTwitchIsLive().done(success, error);
@@ -194,12 +187,12 @@ module App
                 var success = (data: App.GetTwitchResponse) =>
                 {
                     this.CooptionalIsLive(data.IsLive);
-                    resolve(Source.Cooptional);
+                    resolve(App.Source.Cooptional);
                 };
                 var error = (reason: string) =>
                 {
                     console.log("Failed to retrieve Cooptional status. Reason: ", reason);
-                    reject(Source.Cooptional);
+                    reject(App.Source.Cooptional);
                 };
 
                 this.Context.Engine.GetCooptionalIsLive().done(success, error);
