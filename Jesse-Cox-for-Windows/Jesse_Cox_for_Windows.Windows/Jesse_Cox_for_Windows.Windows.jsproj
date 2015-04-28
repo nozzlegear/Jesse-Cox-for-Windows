@@ -52,7 +52,7 @@
     <MinimumVisualStudioVersion>12.0</MinimumVisualStudioVersion>
     <DefaultLanguage>en-US</DefaultLanguage>
     <PackageCertificateKeyFile>Jesse_Cox_for_Windows.Windows_TemporaryKey.pfx</PackageCertificateKeyFile>
-    <PackageCertificateThumbprint>CF1409D9439406BFFC430111D2FE87FFEE3E341C</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>8D26C863D70F22DAA53F7DA345A6D12C426843F2</PackageCertificateThumbprint>
   </PropertyGroup>
   <ItemGroup>
     <AppxManifest Include="package.appxmanifest">

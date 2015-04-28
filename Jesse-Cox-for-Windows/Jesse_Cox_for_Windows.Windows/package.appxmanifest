@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest">
-  <Identity Name="339eaf77-70e9-4b89-858e-d26b81032ffd" Version="2.0.0.0" Publisher="CN=Josh" />
+  <Identity Name="339eaf77-70e9-4b89-858e-d26b81032ffd" Version="2.0.0.0" Publisher="CN=Joshua Harms" />
   <Properties>
     <DisplayName>Jesse_Cox_for_Windows.Windows</DisplayName>
     <PublisherDisplayName>Joshua Harms</PublisherDisplayName>
