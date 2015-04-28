@@ -1,4 +1,6 @@
-﻿module App
+﻿declare var IsPhone: boolean;
+
+module App
 {
     export enum Source
     {
@@ -15,6 +17,9 @@
             Save: (key: string, value: any) =>
             {
                 Windows.Storage.ApplicationData.current.roamingSettings.values[key] = value;
+
+                //Signal a data change
+                Windows.Storage.ApplicationData.current.signalDataChanged();
             },
             Retrieve: (key: string) =>
             {
@@ -30,6 +35,9 @@
             Save: (key: string, value: any) =>
             {
                 Windows.Storage.ApplicationData.current.localSettings.values[key] = value;
+
+                //Signal a data change
+                Windows.Storage.ApplicationData.current.signalDataChanged();
             },
             Retrieve: (key: string) =>
             {
@@ -39,6 +47,10 @@
             {
                 Windows.Storage.ApplicationData.current.localSettings.values.remove(key);
             },
+            SubscribeToChanges: (handler: (args: any) => void) =>
+            {
+                Windows.Storage.ApplicationData.current.ondatachanged = handler;
+            }
         };
 
         static SessionStorage = {
@@ -62,5 +74,7 @@
         {
             return WinJS.Resources.getString("AppSettings.private/" + key).value;
         }
+
+        static IsPhone = IsPhone || false;
     }
 }

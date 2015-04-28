@@ -33,7 +33,7 @@ module App
         {
             console.log("Updating");
 
-            this.Context.IsPhone(this.Context.CheckIfPhone());
+            this.Context.IsNarrowViewport(this.Context.CheckIfNarrowViewport());
         }
 
         //#region Variables
@@ -215,6 +215,23 @@ module App
             {
                 window.location.href = "https://twitch.tv/totalbiscuit";
             }
+        };
+
+        public HandleOpenAppSettings = (context, event) =>
+        {
+            if (App.Utilities.IsPhone)
+            {
+                // TODO: Open phone-specific settings page.
+            }
+            else
+            {
+                WinJS.UI.SettingsFlyout.show()
+            };
+        };
+
+        public HandleOpenAboutPage = (context, event) =>
+        {
+
         };
 
         //#endregion

@@ -102,6 +102,7 @@
     <Content Include="images\splashscreen.png" />
     <Content Include="images\storelogo.png" />
     <Content Include="css\default.css" />
+    <Content Include="TaskLoader.js" />
     <None Include="Jesse_Cox_for_Windows.Windows_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>

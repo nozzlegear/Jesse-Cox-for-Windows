@@ -2,6 +2,8 @@
 }
 
     .yt-thumbnail > img {
+        min-height:360px;
+        min-width:480px;
         max-height: 360px;
         max-width: 480px;
     }
@@ -137,4 +139,9 @@
 
 .phone .home .back-button {
     display: none;
+}
+
+.phone button.win-command .win-label{
+    /*AppBar is purple, but phone may be using a dark theme with dark appbar buttons. Force them to white.*/
+    color:#fff;
 }

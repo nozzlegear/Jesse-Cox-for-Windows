@@ -13,7 +13,7 @@ var App;
             var _this = this;
             this.CheckYouTubeVideos = function () {
                 var promise = new WinJS.Promise(function (resolve, reject) {
-                    var output = new SourceCheckResult(App.Source.YouTube);
+                    var output = new SourceCheckResult(0 /* YouTube */);
                     var success = function (playlist) {
                         var video = playlist.items && playlist.items[0];
                         var storageKey = "LastYouTubeId";
@@ -40,7 +40,7 @@ var App;
             };
             this.CheckTwitch = function () {
                 var promise = new WinJS.Promise(function (resolve, reject) {
-                    var output = new SourceCheckResult(App.Source.Twitch);
+                    var output = new SourceCheckResult(1 /* Twitch */);
                     var success = function (data) {
                         // TODO: Check if we've seen this stream before.
                         resolve(output);
@@ -55,7 +55,7 @@ var App;
             };
             this.CheckCooptional = function () {
                 var promise = new WinJS.Promise(function (resolve, reject) {
-                    var output = new SourceCheckResult(App.Source.Cooptional);
+                    var output = new SourceCheckResult(2 /* Cooptional */);
                     var success = function (data) {
                         // TODO: Check if we've seen this podcast before
                         resolve(output);
@@ -74,7 +74,16 @@ var App;
         }
         //#region Utility functions
         TimerTaskController.prototype.ImportScripts = function () {
-            importScripts("//Microsoft.WinJS.2.0/js/base.js", "ms-appx:///libraries/custom/utilities/utilities.js", "ms-appx:///libraries/custom/applicationengine/applicationengine.js", "ms-appx:///libraries/yeahtoast/yeahtoast.js");
+            //Import App Utilities first, so we can check which version of WinJS to import
+            importScripts("ms-appx:///libraries/custom/utilities/utilities.js");
+            if (!App.Utilities.IsPhone) {
+                importScripts("//Microsoft.WinJS.2.0/js/base.js");
+            }
+            else {
+                importScripts("//Microsoft.Phone.WinJS.2.1/js/base.js");
+            }
+            ;
+            importScripts("ms-appx:///libraries/custom/applicationengine/applicationengine.js", "ms-appx:///libraries/yeahtoast/yeahtoast.js");
         };
         TimerTaskController.prototype.ConfigureVariables = function () {
             this.Engine = new App.ApplicationEngine(App.Utilities.GetAppSetting("YouTubeApiKey"));
@@ -90,13 +99,13 @@ var App;
             var cooptionalResult;
             var doneHandler = function (data) {
                 switch (data.Type) {
-                    case App.Source.YouTube:
+                    case 0 /* YouTube */:
                         youtubeResult = data;
                         break;
-                    case App.Source.Twitch:
+                    case 1 /* Twitch */:
                         twitchResult = data;
                         break;
-                    case App.Source.Cooptional:
+                    case 2 /* Cooptional */:
                         cooptionalResult = data;
                         break;
                 }
@@ -130,4 +139,4 @@ var App;
     })();
     App.TimerTaskController = TimerTaskController;
 })(App || (App = {}));
-new App.TimerTaskController();
+//# sourceMappingURL=Timer.js.map

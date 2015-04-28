@@ -13,17 +13,21 @@ var App;
         Utilities.RoamingStorage = {
             Save: function (key, value) {
                 Windows.Storage.ApplicationData.current.roamingSettings.values[key] = value;
+                //Signal a data change
+                Windows.Storage.ApplicationData.current.signalDataChanged();
             },
             Retrieve: function (key) {
                 return Windows.Storage.ApplicationData.current.roamingSettings.values[key];
             },
             Delete: function (key) {
                 Windows.Storage.ApplicationData.current.roamingSettings.values.remove(key);
-            },
+            }
         };
         Utilities.LocalStorage = {
             Save: function (key, value) {
                 Windows.Storage.ApplicationData.current.localSettings.values[key] = value;
+                //Signal a data change
+                Windows.Storage.ApplicationData.current.signalDataChanged();
             },
             Retrieve: function (key) {
                 return Windows.Storage.ApplicationData.current.localSettings.values[key];
@@ -31,6 +35,9 @@ var App;
             Delete: function (key) {
                 Windows.Storage.ApplicationData.current.localSettings.values.remove(key);
             },
+            SubscribeToChanges: function (handler) {
+                Windows.Storage.ApplicationData.current.ondatachanged = handler;
+            }
         };
         Utilities.SessionStorage = {
             Save: function (key, value) {
@@ -47,7 +54,9 @@ var App;
         Utilities.GetAppSetting = function (key) {
             return WinJS.Resources.getString("AppSettings.private/" + key).value;
         };
+        Utilities.IsPhone = IsPhone || false;
         return Utilities;
     })();
     App.Utilities = Utilities;
 })(App || (App = {}));
+//# sourceMappingURL=utilities.js.map

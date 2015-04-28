@@ -1,4 +1,5 @@
 /// <reference path="libraries/custom/utilities/utilities.ts" />
+/// <reference path="libraries/custom/utilities/utilities.ts" />
 /// <reference path="libraries/custom/applicationengine/applicationengine.ts" />
 /// <reference path="pages/home/home.ts" />
 /// <reference path="typings/custom/ipage.d.ts" />
@@ -13,8 +14,8 @@ var App;
         function Context() {
             var _this = this;
             //#region Utility functions
-            this.CheckIfPhone = function () {
-                return (document.querySelector("#phone") && true) || (document.body && document.body.clientWidth < 850) || true;
+            this.CheckIfNarrowViewport = function () {
+                return App.Utilities.IsPhone || (document.body && document.body.clientWidth < 850);
             };
             this.PrepareGlobalExceptionHandler = function () {
                 WinJS.Promise.onerror = function (eventInfo) {
@@ -28,7 +29,7 @@ var App;
                 WinJS.Application.onsettings = function (e) {
                     e.detail.applicationcommands = {
                         "settingsPane": { href: "/pages/settings/settings.html", title: "General Settings" },
-                        "aboutPane": { href: "/pages/settings/about.html", title: "About" },
+                        "aboutPane": { href: "/pages/settings/about.html", title: "About" }
                     };
                     WinJS.UI.SettingsFlyout.populateSettings(e);
                 };
@@ -55,53 +56,88 @@ var App;
                     App.Utilities.LocalStorage.Save("NotifyCooptional", newValue);
                 });
             };
-            this.RegisterBackgroundTasks = function () {
+            this.RegisterTimerTask = function () {
                 var timerTaskName = "backgroundSourceCheckTask";
                 var background = Windows.ApplicationModel.Background;
-                var taskIterator = background.BackgroundTaskRegistration.allTasks.first();
-                var taskRegistered = false;
-                while (taskIterator.hasCurrent) {
-                    var task = taskIterator.current.value;
-                    if (task.name === timerTaskName) {
-                        taskRegistered = true;
-                        console.log("Task exists.");
-                        break;
-                    }
-                    taskIterator.moveNext();
+                var packageInfo = Windows.ApplicationModel.Package.current.id.version;
+                var appVersion = "" + packageInfo.build + "." + packageInfo.major + "." + packageInfo.minor + "." + packageInfo.revision;
+                var storageKey = "AppVersion";
+                var versionMismatch = App.Utilities.LocalStorage.Retrieve(storageKey) !== appVersion;
+                var accessRemoved = false;
+                //Windows Phone must remove background access and request it again when the app has updated.
+                if (App.Utilities.IsPhone && versionMismatch) {
+                    background.BackgroundExecutionManager.removeAccess();
+                    accessRemoved = true;
                 }
-                if (!taskRegistered) {
-                    if (_this.IsPhone()) {
-                    }
+                //Save latest app version
+                App.Utilities.LocalStorage.Save(storageKey, appVersion);
+                if (accessRemoved || !_this.TaskExists(timerTaskName)) {
+                    var handleDenied = function () {
+                        // Display an error to the user telling them the app cannot give notifications. Only show this error once per app version.
+                        if (versionMismatch) {
+                            var dialog = new Windows.UI.Popups.MessageDialog("", "Background access denied.");
+                            if (App.Utilities.IsPhone) {
+                                dialog.content = "Your phone has automatically disabled background tasks for this app. Without background tasks, the app cannot notify you of new videos or current Twitch streams. Enable background access for this application by going to Settings => Battery Saver => Usage => Jesse Cox for Windows.";
+                            }
+                            else {
+                                dialog.content = "This app has been denied access to your device's lock screen and therefore cannot use background tasks. Without background tasks, the app cannot notify you of new videos or current Twitch streams. Enable background access for this application by opening the app's settings, tapping or clicking Permissions and then enabling both Notifications and Lock Screen access.";
+                            }
+                            dialog.showAsync();
+                        }
+                    };
                     var success = function (result) {
                         if (result === background.BackgroundAccessStatus.denied) {
-                            /* Windows: Background activity and updates for this app are disabled by the user.
-                            *
-                            *  Windows Phone: The maximum number of background apps allowed across the system has been reached or background activity and updates for this app are disabled by the user.
-                            */
-                            console.log("Background access denied.");
+                            // Windows: Background activity and updates for this app are disabled by the user.
+                            // Windows Phone: The maximum number of background apps allowed across the system has been reached or background activity and updates for this app are disabled by the user. 
+                            handleDenied();
                         }
                         else if (result === background.BackgroundAccessStatus.unspecified) {
                             // The user didn't explicitly disable or enable access and updates. 
-                            console.log("Background access denied, grant was unspecified.");
+                            handleDenied();
                         }
                         else {
                             var builder = new background.BackgroundTaskBuilder();
-                            var timeTrigger = new background.TimeTrigger(15, false);
+                            var timeTrigger = new background.TimeTrigger(App.Utilities.IsPhone ? 30 : 15, false);
                             var conditionTrigger = new background.SystemTrigger(background.SystemTriggerType.internetAvailable, false);
                             builder.name = timerTaskName;
-                            builder.taskEntryPoint = "Tasks\\Timer.js";
+                            builder.taskEntryPoint = "TaskLoader.js";
                             builder.setTrigger(conditionTrigger);
                             builder.setTrigger(timeTrigger);
                             var task = builder.register();
-                            console.log("Task registered.");
                         }
                         ;
                     };
                     var error = function () {
-                        // TODO: Display an error to the user telling them the app cannot give notifications. Should only show this error once per app version.
+                        handleDenied();
                     };
                     background.BackgroundExecutionManager.requestAccessAsync().done(success, error);
                 }
+            };
+            this.RegisterLockscreenListener = function () {
+                var background = Windows.ApplicationModel.Background;
+                var taskName = "lockscreenListenerTask";
+                if (!_this.TaskExists(taskName)) {
+                    var builder = new background.BackgroundTaskBuilder();
+                    var trigger = new background.SystemTrigger(background.SystemTriggerType.lockScreenApplicationAdded, false);
+                    builder.name = taskName;
+                    builder.taskEntryPoint = "Tasks\\LockScreenListener.js";
+                    builder.setTrigger(trigger);
+                    var task = builder.register();
+                }
+            };
+            this.TaskExists = function (taskName) {
+                var background = Windows.ApplicationModel.Background;
+                var taskIterator = background.BackgroundTaskRegistration.allTasks.first();
+                var taskExists = false;
+                while (taskIterator.hasCurrent) {
+                    var task = taskIterator.current.value;
+                    if (task.name === taskName) {
+                        taskExists = true;
+                        break;
+                    }
+                    taskIterator.moveNext();
+                }
+                return taskExists;
             };
             //#endregion
             //#region Variables
@@ -110,7 +146,7 @@ var App;
             this.NotificationSettings = {
                 NotifyYouTube: ko.observable(true),
                 NotifyTwitch: ko.observable(true),
-                NotifyCooptional: ko.observable(true),
+                NotifyCooptional: ko.observable(true)
             };
             //#endregion
             //#region Strings
@@ -119,7 +155,7 @@ var App;
             };
             //#endregion
             //#region Booleans
-            this.IsPhone = ko.observable(this.CheckIfPhone());
+            this.IsNarrowViewport = ko.observable(this.CheckIfNarrowViewport());
             //#endregion
             //#endregion
             //#region WinJS application event handlers
@@ -140,12 +176,8 @@ var App;
                         //Page is already loaded. Launch the URL.
                         Windows.System.Launcher.launchUriAsync(new Windows.Foundation.Uri(launchString));
                     }
-                    else {
-                        if (args.detail.previousExecutionState !== execState.terminated) {
-                        }
-                        else {
-                        }
-                        // Optimize the load of the application and while the splash screen is shown, execute high priority scheduled work.
+                    else if (args.detail.previousExecutionState !== execState.terminated) {
+                        //Application has been newly launched. Optimize the load of the application
                         ui.disableAnimations();
                         var process = ui.processAll().then(function () {
                             return sched.requestDrain(sched.Priority.aboveNormal + 1);
@@ -165,6 +197,8 @@ var App;
                             return nav.navigate(initialLocation || Application.navigator.home, nav.state);
                         });
                         args.setPromise(process);
+                    }
+                    else {
                     }
                     ;
                 }
@@ -194,7 +228,19 @@ var App;
             this.LoadNotificationSettings();
             this.RegisterKnockoutSubscriptions();
             //Check for and register background task
-            this.RegisterBackgroundTasks();
+            this.RegisterTimerTask();
+            //Listen for the app to be added to the lockscreen.
+            this.RegisterLockscreenListener();
+            //Subscribe to changes in localstorage data. Used by the lockscreen task to signal when the app has been added.
+            App.Utilities.LocalStorage.SubscribeToChanges(function (args) {
+                //Check the lock screen's status
+                if (App.Utilities.LocalStorage.Retrieve("LockScreenStatus") === "Added") {
+                    //Delete storage to prevent duplicate events
+                    App.Utilities.LocalStorage.Delete("LockScreenStatus");
+                    //Try to register timer task
+                    _this.RegisterTimerTask();
+                }
+            });
             //Hide status bar on phones
             if (Windows.UI.ViewManagement.StatusBar) {
                 this.StatusBar = Windows.UI.ViewManagement.StatusBar.getForCurrentView();
@@ -231,7 +277,7 @@ var App;
                     if (currentPage && currentPage.HandlePageUpdateLayout) {
                         _this.CurrentPage().HandlePageUpdateLayout(el, args);
                     }
-                },
+                }
             };
             //Automatically call the page's updateLayout when the window is resized
             var resizeDebouncer;
@@ -261,3 +307,4 @@ var App;
 })(App || (App = {}));
 //Your tax dollars at work!
 var context = new App.Context();
+//# sourceMappingURL=default.js.map

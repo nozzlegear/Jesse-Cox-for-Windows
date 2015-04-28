@@ -28,6 +28,7 @@
     <Content Include="$(MSBuildThisFileDirectory)Libraries\custom\ApplicationEngine\ApplicationEngine.ts" />
     <Content Include="$(MSBuildThisFileDirectory)Libraries\custom\navigator.js" />
     <Content Include="$(MSBuildThisFileDirectory)Libraries\custom\Utilities\Utilities.js" />
+    <Content Include="$(MSBuildThisFileDirectory)Libraries\custom\Utilities\utilities.js.map" />
     <Content Include="$(MSBuildThisFileDirectory)Libraries\custom\Utilities\Utilities.ts" />
     <Content Include="$(MSBuildThisFileDirectory)Libraries\knockout-winjs\knockout-winjs.js" />
     <Content Include="$(MSBuildThisFileDirectory)Libraries\knockout\knockout.js" />
@@ -42,6 +43,9 @@
     <Content Include="$(MSBuildThisFileDirectory)Pages\home\home.ts" />
     <Content Include="$(MSBuildThisFileDirectory)Pages\settings\about.html" />
     <Content Include="$(MSBuildThisFileDirectory)Pages\settings\settings.html" />
+    <Content Include="$(MSBuildThisFileDirectory)Tasks\LockScreenListener.js" />
+    <Content Include="$(MSBuildThisFileDirectory)Tasks\LockScreenListener.js.map" />
+    <Content Include="$(MSBuildThisFileDirectory)Tasks\LockScreenListener.ts" />
     <Content Include="$(MSBuildThisFileDirectory)Tasks\Timer.js" />
     <Content Include="$(MSBuildThisFileDirectory)Tasks\Timer.js.map" />
     <Content Include="$(MSBuildThisFileDirectory)Tasks\Timer.ts" />

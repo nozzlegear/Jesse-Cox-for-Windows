@@ -19,6 +19,7 @@
         <header class="page-header" aria-label="Header content" role="banner">
             <h1 class="titlearea win-type-ellipsis" data-bind="text: StringResources.AppName"></h1>
             <div class="image-container" data-bind="with: CurrentPage">
+                <span data-bind="text: $root.AccessGranted"></span>
                 <img style="display:none;" data-bind="visible: !TwitchIsLive() && !CooptionalIsLive(), attr: { src: '/images/cox' + (Math.round(Math.random() * 8) || 1) + '.png' }" />
                 <img src="/Images/live-now.png"
                      style="display:none;"
@@ -40,7 +41,7 @@
                     </div>
                 </div>
             </script>
-            <!-- ko if: $root.IsPhone() -->
+            <!-- ko if: $root.IsNarrowViewport() -->
             <div class="listView win-selectionstylefilled"
                  style="height:100%; width:100%;"
                  data-bind="winListView: {
@@ -50,7 +51,7 @@
                  tapBehavior: 'none',
                  layout: {type: WinJS.UI.ListLayout}}"></div>
             <!-- /ko -->
-            <!-- ko ifnot: $root.IsPhone() -->
+            <!-- ko ifnot: $root.IsNarrowViewport() -->
             <div class="listView win-selectionstylefilled"
                  style="height:100%; width:100%;"
                  data-bind="winListView: {
@@ -96,7 +97,10 @@
                 data-bind="click: RefreshSources"></button>
         <button data-win-control="WinJS.UI.AppBarCommand"
                 data-win-options="{id: 'settings', label: 'Settings', icon: 'settings'}"
-                data-bind="click: function (c, e) { WinJS.UI.SettingsFlyout.show() }"></button>
+                data-bind="click: HandleOpenAppSettings"></button>
+        <button data-win-control="WinJS.UI.AppBarCommand"
+                data-win-options="{id: 'about', label: 'About', section: 'selection'}"
+                data-bind="click: HandleOpenAboutPage, visible: App.Utilities.IsPhone"></button>
     </div>
     <!--#endregion -->
 </body>

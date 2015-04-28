@@ -30,9 +30,19 @@ module App
 
         private ImportScripts()
         {
+            //Import App Utilities first, so we can check which version of WinJS to import
+            importScripts("ms-appx:///libraries/custom/utilities/utilities.js");
+
+            if (!App.Utilities.IsPhone)
+            {
+                importScripts("//Microsoft.WinJS.2.0/js/base.js");
+            }
+            else
+            {
+                importScripts("//Microsoft.Phone.WinJS.2.1/js/base.js");
+            };
+
             importScripts(
-                "//Microsoft.WinJS.2.0/js/base.js",
-                "ms-appx:///libraries/custom/utilities/utilities.js",
                 "ms-appx:///libraries/custom/applicationengine/applicationengine.js",
                 "ms-appx:///libraries/yeahtoast/yeahtoast.js");
         }
@@ -133,7 +143,7 @@ module App
                             output.LaunchUrl = "https://www.youtube.com/watch/?v=" + video.snippet.resourceId.videoId
                             output.ToastThumbnail = video.snippet.thumbnails.default.url;
 
-                           //Save the video's id so we don't show more toasts for it in the future. 
+                            //Save the video's id so we don't show more toasts for it in the future. 
                             App.Utilities.LocalStorage.Save(storageKey, video.id);
                         }
                     }
@@ -201,5 +211,3 @@ module App
         //#endregion
     }
 }
-
-new App.TimerTaskController();

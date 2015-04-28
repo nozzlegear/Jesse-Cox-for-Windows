@@ -17,7 +17,7 @@ var App;
             };
             this.HandlePageUpdateLayout = function (element, args) {
                 console.log("Updating");
-                _this.Context.IsPhone(_this.Context.CheckIfPhone());
+                _this.Context.IsNarrowViewport(_this.Context.CheckIfNarrowViewport());
             };
             //#region Variables
             //#region Objects and array
@@ -53,13 +53,13 @@ var App;
                     var cooptionalDone = false, cooptionalError = false;
                     var doneHandler = function (source) {
                         switch (source) {
-                            case App.Source.YouTube:
+                            case 0 /* YouTube */:
                                 youtubeDone = true;
                                 break;
-                            case App.Source.Twitch:
+                            case 1 /* Twitch */:
                                 twitchDone = true;
                                 break;
-                            case App.Source.Cooptional:
+                            case 2 /* Cooptional */:
                                 cooptionalDone = true;
                                 break;
                         }
@@ -70,13 +70,13 @@ var App;
                     };
                     var errorHandler = function (source) {
                         switch (source) {
-                            case App.Source.YouTube:
+                            case 0 /* YouTube */:
                                 youtubeError = true;
                                 break;
-                            case App.Source.Twitch:
+                            case 1 /* Twitch */:
                                 twitchError = true;
                                 break;
-                            case App.Source.Cooptional:
+                            case 2 /* Cooptional */:
                                 cooptionalError = true;
                                 break;
                         }
@@ -93,11 +93,11 @@ var App;
                 var promise = new WinJS.Promise(function (resolve, reject) {
                     var success = function (videos) {
                         _this.Videos(videos.items);
-                        resolve(App.Source.YouTube);
+                        resolve(0 /* YouTube */);
                     };
                     var error = function (reason) {
                         console.log("Failed to retrieve YouTube videos. Reason: ", reason);
-                        reject(App.Source.YouTube);
+                        reject(0 /* YouTube */);
                     };
                     _this.Context.Engine.GetYouTubeVideos(10).done(success, error);
                 });
@@ -107,11 +107,11 @@ var App;
                 var promise = new WinJS.Promise(function (resolve, reject) {
                     var success = function (data) {
                         _this.TwitchIsLive(data.IsLive);
-                        resolve(App.Source.Twitch);
+                        resolve(1 /* Twitch */);
                     };
                     var error = function (reason) {
                         console.log("Failed to retrieve Twitch status. Reason: ", reason);
-                        reject(App.Source.Twitch);
+                        reject(1 /* Twitch */);
                     };
                     _this.Context.Engine.GetTwitchIsLive().done(success, error);
                 });
@@ -121,11 +121,11 @@ var App;
                 var promise = new WinJS.Promise(function (resolve, reject) {
                     var success = function (data) {
                         _this.CooptionalIsLive(data.IsLive);
-                        resolve(App.Source.Cooptional);
+                        resolve(2 /* Cooptional */);
                     };
                     var error = function (reason) {
                         console.log("Failed to retrieve Cooptional status. Reason: ", reason);
-                        reject(App.Source.Cooptional);
+                        reject(2 /* Cooptional */);
                     };
                     _this.Context.Engine.GetCooptionalIsLive().done(success, error);
                 });
@@ -141,6 +141,16 @@ var App;
                     window.location.href = "https://twitch.tv/totalbiscuit";
                 }
             };
+            this.HandleOpenAppSettings = function (context, event) {
+                if (App.Utilities.IsPhone) {
+                }
+                else {
+                    WinJS.UI.SettingsFlyout.show();
+                }
+                ;
+            };
+            this.HandleOpenAboutPage = function (context, event) {
+            };
             this.RefreshSources();
         }
         HomeController.ProcessPage = function (resolve, reject, context) {
@@ -152,3 +162,4 @@ var App;
     })();
     App.HomeController = HomeController;
 })(App || (App = {}));
+//# sourceMappingURL=home.js.map

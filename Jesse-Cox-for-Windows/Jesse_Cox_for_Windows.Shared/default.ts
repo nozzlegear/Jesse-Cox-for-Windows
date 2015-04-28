@@ -1,4 +1,5 @@
 ﻿/// <reference path="libraries/custom/utilities/utilities.ts" />
+/// <reference path="libraries/custom/utilities/utilities.ts" />
 /// <reference path="libraries/custom/applicationengine/applicationengine.ts" />
 /// <reference path="pages/home/home.ts" />
 /// <reference path="typings/custom/ipage.d.ts" />
@@ -32,7 +33,24 @@ module App
             this.RegisterKnockoutSubscriptions();
 
             //Check for and register background task
-            this.RegisterBackgroundTasks();
+            this.RegisterTimerTask();
+
+            //Listen for the app to be added to the lockscreen.
+            this.RegisterLockscreenListener();
+
+            //Subscribe to changes in localstorage data. Used by the lockscreen task to signal when the app has been added.
+            App.Utilities.LocalStorage.SubscribeToChanges((args) =>
+            {
+                //Check the lock screen's status
+                if (App.Utilities.LocalStorage.Retrieve("LockScreenStatus") === "Added")
+                {
+                    //Delete storage to prevent duplicate events
+                    App.Utilities.LocalStorage.Delete("LockScreenStatus");
+
+                    //Try to register timer task
+                    this.RegisterTimerTask();
+                }
+            });
 
             //Hide status bar on phones
             if (Windows.UI.ViewManagement.StatusBar)
@@ -52,9 +70,9 @@ module App
 
         //#region Utility functions
 
-        public CheckIfPhone = () =>
+        public CheckIfNarrowViewport = () =>
         {
-            return (document.querySelector("#phone") && true) || (document.body && document.body.clientWidth < 850) || true;
+            return App.Utilities.IsPhone || (document.body && document.body.clientWidth < 850);
         };
 
         private PrepareGlobalExceptionHandler = () =>
@@ -180,73 +198,125 @@ module App
             });
         };
 
-        private RegisterBackgroundTasks = () =>
+        private RegisterTimerTask = () =>
         {
             var timerTaskName = "backgroundSourceCheckTask";
             var background = Windows.ApplicationModel.Background;
+            var packageInfo = Windows.ApplicationModel.Package.current.id.version;
+            var appVersion = `${packageInfo.build}.${packageInfo.major}.${packageInfo.minor}.${packageInfo.revision}`;
+            var storageKey = "AppVersion";
+            var versionMismatch = App.Utilities.LocalStorage.Retrieve(storageKey) !== appVersion;
+            var accessRemoved = false;
+
+            //Windows Phone must remove background access and request it again when the app has updated.
+            if (App.Utilities.IsPhone && versionMismatch)
+            {
+                background.BackgroundExecutionManager.removeAccess();
+
+                accessRemoved = true;
+            }
+
+            //Save latest app version
+            App.Utilities.LocalStorage.Save(storageKey, appVersion);
+
+            if (accessRemoved || !this.TaskExists(timerTaskName))
+            {
+                var handleDenied = () =>
+                {
+                    // Display an error to the user telling them the app cannot give notifications. Only show this error once per app version.
+                    if (versionMismatch)
+                    {
+                        var dialog = new Windows.UI.Popups.MessageDialog("", "Background access denied.");
+
+                        if (App.Utilities.IsPhone)
+                        {
+                            dialog.content = "Your phone has automatically disabled background tasks for this app. Without background tasks, the app cannot notify you of new videos or current Twitch streams. Enable background access for this application by going to Settings => Battery Saver => Usage => Jesse Cox for Windows.";
+                        }
+                        else
+                        {
+                            dialog.content = "This app has been denied access to your device's lock screen and therefore cannot use background tasks. Without background tasks, the app cannot notify you of new videos or current Twitch streams. Enable background access for this application by opening the app's settings, tapping or clicking Permissions and then enabling both Notifications and Lock Screen access.";
+                        }
+
+                        dialog.showAsync();
+                    }
+                };
+
+                var success = (result: Windows.ApplicationModel.Background.BackgroundAccessStatus) =>
+                {
+                    if (result === background.BackgroundAccessStatus.denied)
+                    {
+                        // Windows: Background activity and updates for this app are disabled by the user.
+                        // Windows Phone: The maximum number of background apps allowed across the system has been reached or background activity and updates for this app are disabled by the user. 
+                        handleDenied();
+                    }
+                    else if (result === background.BackgroundAccessStatus.unspecified)
+                    {
+                        // The user didn't explicitly disable or enable access and updates. 
+                        handleDenied();
+                    }
+                    else
+                    {
+                        var builder = new background.BackgroundTaskBuilder();
+                        var timeTrigger = new background.TimeTrigger(App.Utilities.IsPhone ? 30 : 15, false);
+                        var conditionTrigger = new background.SystemTrigger(background.SystemTriggerType.internetAvailable, false);
+
+                        builder.name = timerTaskName;
+                        builder.taskEntryPoint = "TaskLoader.js";
+                        builder.setTrigger(conditionTrigger);
+                        builder.setTrigger(timeTrigger);
+
+                        var task = builder.register();
+                    };
+                };
+                var error = () =>
+                {
+                    handleDenied();
+                };
+
+                background.BackgroundExecutionManager.requestAccessAsync().done(success, error);
+            }
+        }
+
+        private RegisterLockscreenListener = () =>
+        {
+            var background = Windows.ApplicationModel.Background;
+            var taskName = "lockscreenListenerTask";
+
+            if (!this.TaskExists(taskName))
+            {
+                var builder = new background.BackgroundTaskBuilder();
+                var trigger = new background.SystemTrigger(background.SystemTriggerType.lockScreenApplicationAdded, false);
+
+                builder.name = taskName;
+                builder.taskEntryPoint = "Tasks\\LockScreenListener.js";
+                builder.setTrigger(trigger);
+
+                var task = builder.register();
+            }
+        }
+
+        private TaskExists = (taskName: string) =>
+        {
+            var background = Windows.ApplicationModel.Background;
             var taskIterator = background.BackgroundTaskRegistration.allTasks.first();
-            var taskRegistered = false;
+            var taskExists = false;
 
             //Iterate over tasks (can't use lodash) to see if it's registered
             while (taskIterator.hasCurrent)
             {
                 var task = taskIterator.current.value;
 
-                if (task.name === timerTaskName)
+                if (task.name === taskName)
                 {
-                    taskRegistered = true;
-                    console.log("Task exists.");
+                    taskExists = true;
+
                     break;
                 }
 
                 taskIterator.moveNext();
             }
 
-            if (!taskRegistered)
-            {
-                if (this.IsPhone())
-                {
-                    // TODO: Check app version. If it's a new version, Windows Phone needs to remove background access and request it again.
-                }
-
-                var success = (result: Windows.ApplicationModel.Background.BackgroundAccessStatus) =>
-                {
-                    if (result === background.BackgroundAccessStatus.denied)
-                    {
-                        /* Windows: Background activity and updates for this app are disabled by the user.
-                        *
-                        *  Windows Phone: The maximum number of background apps allowed across the system has been reached or background activity and updates for this app are disabled by the user. 
-                        */
-                        console.log("Background access denied.");
-                    }
-                    else if (result === background.BackgroundAccessStatus.unspecified)
-                    {
-                        // The user didn't explicitly disable or enable access and updates. 
-                        console.log("Background access denied, grant was unspecified.");
-                    }
-                    else
-                    {
-                        var builder = new background.BackgroundTaskBuilder();
-                        var timeTrigger = new background.TimeTrigger(15, false);
-                        var conditionTrigger = new background.SystemTrigger(background.SystemTriggerType.internetAvailable, false);
-
-                        builder.name = timerTaskName;
-                        builder.taskEntryPoint = "Tasks\\Timer.js";
-                        builder.setTrigger(conditionTrigger);
-                        builder.setTrigger(timeTrigger);
-
-                        var task = builder.register();
-
-                        console.log("Task registered.");
-                    };
-                };
-                var error = () =>
-                {
-                    // TODO: Display an error to the user telling them the app cannot give notifications. Should only show this error once per app version.
-                };
-
-                background.BackgroundExecutionManager.requestAccessAsync().done(success, error);
-            }
+            return taskExists;
         }
 
         //#endregion
@@ -281,7 +351,7 @@ module App
 
         //#region Booleans
 
-        public IsPhone = ko.observable(this.CheckIfPhone());
+        public IsNarrowViewport = ko.observable(this.CheckIfNarrowViewport());
 
         //#endregion
 
@@ -312,18 +382,9 @@ module App
                     //Page is already loaded. Launch the URL.
                     Windows.System.Launcher.launchUriAsync(new Windows.Foundation.Uri(launchString));
                 }
-                else
+                else if (args.detail.previousExecutionState !== execState.terminated)
                 {
-                    if (args.detail.previousExecutionState !== execState.terminated)
-                    {
-                        // TODO: Application has been newly launched. 
-                    } else
-                    {
-                        // TODO: This application has been reactivated from suspension.
-                        // Restore application state here.
-                    }
-
-                    // Optimize the load of the application and while the splash screen is shown, execute high priority scheduled work.
+                    //Application has been newly launched. Optimize the load of the application
                     ui.disableAnimations();
 
                     var process = ui.processAll().then(() =>
@@ -350,6 +411,10 @@ module App
                     });
 
                     args.setPromise(process);
+                }
+                else
+                {
+                    // Application was suspended.                                        
                 };
             };
         };

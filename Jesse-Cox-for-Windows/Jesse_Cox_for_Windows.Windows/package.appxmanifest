@@ -31,10 +31,14 @@
         </m2:InitialRotationPreference>
       </m2:VisualElements>
       <Extensions>
-        <Extension Category="windows.backgroundTasks" StartPage="Tasks\Timer.js">
+        <Extension Category="windows.backgroundTasks" StartPage="TaskLoader.js">
+          <BackgroundTasks>
+            <Task Type="timer" />
+          </BackgroundTasks>
+        </Extension>
+        <Extension Category="windows.backgroundTasks" StartPage="Tasks\LockScreenListener.js">
           <BackgroundTasks>
             <Task Type="systemEvent" />
-            <Task Type="timer" />
           </BackgroundTasks>
         </Extension>
       </Extensions>
