@@ -1,3 +1,4 @@
+/// <reference path="libraries/custom/utilities/utilities.ts" />
 /// <reference path="libraries/custom/applicationengine/applicationengine.ts" />
 /// <reference path="pages/home/home.ts" />
 /// <reference path="typings/custom/ipage.d.ts" />
@@ -13,7 +14,7 @@ var App;
             var _this = this;
             //#region Utility functions
             this.CheckIfPhone = function () {
-                return (document.querySelector("#phone") && true) || (document.body.clientWidth < 850);
+                return (document.querySelector("#phone") && true) || (document.body && document.body.clientWidth < 850) || true;
             };
             this.PrepareGlobalExceptionHandler = function () {
                 WinJS.Promise.onerror = function (eventInfo) {

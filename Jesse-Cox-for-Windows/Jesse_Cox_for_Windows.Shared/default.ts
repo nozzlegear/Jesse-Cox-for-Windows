@@ -1,4 +1,5 @@
-﻿/// <reference path="libraries/custom/applicationengine/applicationengine.ts" />
+﻿/// <reference path="libraries/custom/utilities/utilities.ts" />
+/// <reference path="libraries/custom/applicationengine/applicationengine.ts" />
 /// <reference path="pages/home/home.ts" />
 /// <reference path="typings/custom/ipage.d.ts" />
 /// <reference path="typings/custom/windows.ui.viewmanagement.statusbar.d.ts" />
@@ -53,7 +54,7 @@ module App
 
         public CheckIfPhone = () =>
         {
-            return (document.querySelector("#phone") && true) || (document.body.clientWidth < 850);
+            return (document.querySelector("#phone") && true) || (document.body && document.body.clientWidth < 850) || true;
         };
 
         private PrepareGlobalExceptionHandler = () =>
