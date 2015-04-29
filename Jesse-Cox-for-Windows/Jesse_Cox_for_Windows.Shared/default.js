@@ -1,4 +1,5 @@
-﻿/// <reference path="libraries/custom/utilities/utilities.ts" />
+/// <reference path="pages/about/about.ts" />
+/// <reference path="libraries/custom/utilities/utilities.ts" />
 /// <reference path="libraries/custom/utilities/utilities.ts" />
 /// <reference path="libraries/custom/applicationengine/applicationengine.ts" />
 /// <reference path="pages/home/home.ts" />
@@ -32,20 +33,10 @@ var App;
                 WinJS.Application.onsettings = function (e) {
                     e.detail.applicationcommands = {
                         "settingsPane": { href: "/pages/settings/settings.html", title: "General Settings" },
-                        "aboutPane": { href: "/pages/settings/about.html", title: "About" }
+                        "aboutPane": { href: "/pages/settings/about.html", title: "About" },
                     };
                     WinJS.UI.SettingsFlyout.populateSettings(e);
                 };
-            };
-            this.LoadNotificationSettings = function () {
-                var settings = _this.NotificationSettings;
-                var youtube = App.Utilities.LocalStorage.Retrieve("NotifyYouTube");
-                var twitch = App.Utilities.LocalStorage.Retrieve("NotifyTwitch");
-                var cooptional = App.Utilities.LocalStorage.Retrieve("NotifyCooptional");
-                var isBoolean = function (val) { return typeof (val) === "boolean"; };
-                settings.NotifyYouTube(isBoolean(youtube) ? youtube : true);
-                settings.NotifyTwitch(isBoolean(twitch) ? twitch : true);
-                settings.NotifyCooptional(isBoolean(cooptional) ? cooptional : true);
             };
             this.RegisterKnockoutSubscriptions = function () {
                 //Automatically save the notification settings when they change.
@@ -146,11 +137,15 @@ var App;
             //#region Variables
             //#region Objects and arrays
             this.CurrentPage = ko.observable();
-            this.NotificationSettings = {
-                NotifyYouTube: ko.observable(true),
-                NotifyTwitch: ko.observable(true),
-                NotifyCooptional: ko.observable(true)
-            };
+            this.NotificationSettings = (function () {
+                var settings = App.Utilities.GetNotificationSettings();
+                var output = {
+                    NotifyYouTube: ko.observable(settings.NotifyYouTube),
+                    NotifyTwitch: ko.observable(settings.NotifyTwitch),
+                    NotifyCooptional: ko.observable(settings.NotifyCooptional)
+                };
+                return output;
+            }());
             //#endregion
             //#region Strings
             this.StringResources = {
@@ -229,12 +224,13 @@ var App;
             this.RegisterSettings();
             this.RegisterApplicationPages();
             //Load notifications and subscribe to changes
-            this.LoadNotificationSettings();
             this.RegisterKnockoutSubscriptions();
             //Check for and register background task
             this.RegisterTimerTask();
-            //Listen for the app to be added to the lockscreen.
-            this.RegisterLockscreenListener();
+            //Listen for the app to be added to the lockscreen. Only necessary for non-WP apps
+            if (!App.Utilities.IsPhone) {
+                this.RegisterLockscreenListener();
+            }
             //Subscribe to changes in localstorage data. Used by the lockscreen task to signal when the app has been added.
             App.Utilities.LocalStorage.SubscribeToChanges(function (args) {
                 //Check the lock screen's status
@@ -260,14 +256,20 @@ var App;
             var _this = this;
             //All pages call ready, unload and updatelayout in the same way.
             var defaultHandlers = {
-                ready: function () {
-                    _this.PageLoadingPromise.then(function (pageController) {
-                        _this.CurrentPage(pageController);
-                        //Bind Knockout
-                        ko.cleanNode(document.getElementById("contenthost"));
-                        ko.applyBindings(_this, document.getElementById("contenthost"));
-                        _this.CurrentPage().HandlePageReady();
-                        WinJS.UI.processAll();
+                ready: function (newPageContainer, state) {
+                    _this.PageLoadingPromise.then(function (newPageController) {
+                        WinJS.UI.processAll().then(function () {
+                            //Clean old node
+                            if (_this.CurrentPageContainer) {
+                                ko.cleanNode(_this.CurrentPageContainer);
+                            }
+                            ;
+                            _this.CurrentPageContainer = newPageContainer;
+                            //Set page and bind KO to new node
+                            _this.CurrentPage(newPageController);
+                            ko.applyBindings(_this, newPageContainer);
+                            _this.CurrentPage().HandlePageReady();
+                        });
                     });
                 },
                 unload: function (args) {
@@ -281,7 +283,7 @@ var App;
                     if (currentPage && currentPage.HandlePageUpdateLayout) {
                         _this.CurrentPage().HandlePageUpdateLayout(el, args);
                     }
-                }
+                },
             };
             //Automatically call the page's updateLayout when the window is resized
             var resizeDebouncer;
@@ -304,6 +306,16 @@ var App;
                     });
                 }
             }));
+            if (App.Utilities.IsPhone) {
+                //About page
+                WinJS.UI.Pages.define("/pages/about/about.html", _.extend(defaultHandlers, {
+                    processed: function (e, args) {
+                        _this.PageLoadingPromise = new WinJS.Promise(function (resolve, reject) {
+                            App.AboutController.ProcessPage(resolve, reject, _this);
+                        });
+                    }
+                }));
+            }
         };
         return Context;
     })();
@@ -311,4 +323,3 @@ var App;
 })(App || (App = {}));
 //Your tax dollars at work!
 var context = new App.Context();
-//# sourceMappingURL=default.js.map

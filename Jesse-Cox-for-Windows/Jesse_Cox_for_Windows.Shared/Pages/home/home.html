@@ -7,7 +7,7 @@
     <link href="home.css" rel="stylesheet" />
 </head>
 <body>
-    <div class="home fragment">
+    <div id="homeHost" class="home fragment">
         <div style="height:100%; -ms-grid-row:2;" data-bind="visible: CurrentPage().IsRefreshingSources()">
             <div style="height:100%; display:flex; align-items:center; justify-content:center;">
                 <div style="text-align:center;">
@@ -31,7 +31,7 @@
             <script type="text/html" id="videoTemplate">
                 <div style="position:relative;"
                      class="listViewItem yt-thumbnail black-transparent-bg"
-                     data-bind="with: snippet, click: function (c, e) { window.location.href = 'https://www.youtube.com/watch/?v=' + c.snippet.resourceId.videoId }">
+                     data-bind="with: snippet, click: function (c, e) { window.location.href = 'https://www.youtube.com/watch?v=' + c.snippet.resourceId.videoId }">
                     <div class="black-transparent-bg info top">
                         <span class="win-type-ellipsis" data-bind="text: title"></span>
                     </div>
@@ -63,45 +63,26 @@
             <!-- /ko -->
         </section>
     </div>
-    <!--#region AppBars -->
-    <div id="topAppBar" 
-         data-win-control="WinJS.UI.AppBar" 
-         style="background-color:#432966;" 
-         data-win-options="{placement: 'top'}">
-        <button data-win-control="WinJS.UI.AppBarCommand"
-                data-win-options="{id: 'youtube', label: 'YouTube', icon: 'play'}"
-                data-bind="click: function (c, e) { window.location.href = 'https://www.youtube.com/user/OMFGcata'; }"></button>
-        <button data-win-control="WinJS.UI.AppBarCommand"
-                data-win-options="{id: 'twitter', label: 'Twitter', icon: 'url(/images/icons/twitter_icon.png)'}"
-                data-bind="click: function (c, e) { window.location.href = 'https://twitter.com/jessecox'; }"></button>
-        <button data-win-control="WinJS.UI.AppBarCommand"
-                data-win-options="{id: 'facebook', label: 'Facebook', icon: 'url(/images/icons/facebook_icon.png)'}"
-                data-bind="click: function (c, e) { window.location.href = 'https://www.facebook.com/TheJesseCox'; }"></button>
-        <button data-win-control="WinJS.UI.AppBarCommand"
-                data-win-options="{id: 'soundcloud', label: 'SoundCloud', icon: 'url(/images/icons/soundcloud_icon.png)'}"
-                data-bind="click: function (c, e) { window.location.href = 'https://soundcloud.com/coxncrendor'; }"></button>
-        <button data-win-control="WinJS.UI.AppBarCommand"
-                data-win-options="{id: 'reddit', label: 'Reddit', icon: 'url(/images/icons/reddit_icon.png)'}"
-                data-bind="click: function (c, e) { window.location.href = 'https://www.reddit.com/r/shaboozey'; }"></button>
-        <button data-win-control="WinJS.UI.AppBarCommand"
-                data-win-options="{id: 'gametee', label: 'Gametee', icon: 'url(/images/icons/shirt_icon.png)'}"
-                data-bind="click: function (c, e) { window.location.href = 'http://www.gametee.co.uk/category/jesse-cox'; }"></button>
-    </div>
-    <div id="bottomAppBar" 
-         data-win-control="WinJS.UI.AppBar" 
-         style="background-color:#432966;" 
-         data-win-options="{placement: 'bottom'}" 
-         data-bind="with: CurrentPage">
-        <button data-win-control="WinJS.UI.AppBarCommand"
-                data-win-options="{id: 'refresh', label: 'Refresh', icon: 'refresh'}"
-                data-bind="click: RefreshSources"></button>
-        <button data-win-control="WinJS.UI.AppBarCommand"
-                data-win-options="{id: 'settings', label: 'Settings', icon: 'settings'}"
-                data-bind="click: HandleOpenAppSettings"></button>
-        <button data-win-control="WinJS.UI.AppBarCommand"
-                data-win-options="{id: 'about', label: 'About', section: 'selection'}"
-                data-bind="click: HandleOpenAboutPage, visible: App.Utilities.IsPhone"></button>
-    </div>
-    <!--#endregion -->
+        <!--#region AppBars -->
+        <div id="topAppBar"
+             data-bind="winAppBar: {placement: 'top'}"
+             style="background-color:#432966;">
+            <button data-bind="winAppBarCommand: { id: 'youtube', label: 'YouTube', icon: 'play' }, click: function (c, e) { window.location.href = 'https://www.youtube.com/user/OMFGcata'; }"></button>
+            <button data-bind="winAppBarCommand: { id: 'twitter', label: 'Twitter', icon: 'url(/images/icons/twitter_icon.png)' }, click: function (c, e) { window.location.href = 'https://twitter.com/jessecox'; }"></button>
+            <button data-bind="winAppBarCommand: { id: 'facebook', label: 'Facebook', icon: 'url(/images/icons/facebook_icon.png)' }, click: function (c, e) { window.location.href = 'https://www.facebook.com/TheJesseCox'; }"></button>
+            <button data-bind="winAppBarCommand: { id: 'soundcloud', label: 'SoundCloud', icon: 'url(/images/icons/soundcloud_icon.png)' }, click: function (c, e) { window.location.href = 'https://soundcloud.com/coxncrendor'; }"></button>
+            <button data-bind="winAppBarCommand: { id: 'reddit', label: 'Reddit', icon: 'url(/images/icons/reddit_icon.png)' }, click: function (c, e) { window.location.href = 'https://www.reddit.com/r/shaboozey'; }"></button>
+            <button data-bind="winAppBarCommand: { id: 'gametee', label: 'Gametee', icon: 'url(/images/icons/shirt_icon.png)' }, click: function (c, e) { window.location.href = 'http://www.gametee.co.uk/category/jesse-cox'; }"></button>
+        </div>
+        <div id="bottomAppBar"
+             data-bind="winAppBar: {placement: 'bottom'}"
+             style="background-color:#432966;">
+            <!-- ko with: CurrentPage -->
+            <button data-bind="winAppBarCommand: { id: 'refresh', label: 'Refresh', icon: 'refresh' }, click: RefreshSources"></button>
+            <button data-bind="winAppBarCommand: { id: 'settings', label: 'Settings', icon: 'settings' }, click: HandleOpenAppSettings"></button>
+            <button data-bind="winAppBarCommand: { id: 'about', label: 'About', section: 'selection' }, click: HandleOpenAboutPage, visible: App.Utilities.IsPhone"></button>
+            <!-- /ko -->
+        </div>
+        <!--#endregion -->
 </body>
 </html>

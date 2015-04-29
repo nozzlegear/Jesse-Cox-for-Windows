@@ -1,4 +1,4 @@
-﻿/// <reference path="../../default.ts" />
+/// <reference path="../../default.ts" />
 /// <reference path="../../typings/custom/ipage.d.ts" />
 /// <reference path="../../typings/knockout/knockout.d.ts" />
 /// <reference path="../../typings/winjs/winjs.d.ts" />
@@ -19,12 +19,10 @@ var App;
                 _this.Videos(null);
             };
             this.HandlePageUpdateLayout = function (element, args) {
-                console.log("Updating");
                 _this.Context.IsNarrowViewport(_this.Context.CheckIfNarrowViewport());
             };
             //#region Variables
             //#region Objects and array
-            // ListView
             this.Videos = ko.observableArray([]);
             //#endregion
             //#region Booleans
@@ -56,13 +54,13 @@ var App;
                     var cooptionalDone = false, cooptionalError = false;
                     var doneHandler = function (source) {
                         switch (source) {
-                            case 0 /* YouTube */:
+                            case App.Source.YouTube:
                                 youtubeDone = true;
                                 break;
-                            case 1 /* Twitch */:
+                            case App.Source.Twitch:
                                 twitchDone = true;
                                 break;
-                            case 2 /* Cooptional */:
+                            case App.Source.Cooptional:
                                 cooptionalDone = true;
                                 break;
                         }
@@ -73,13 +71,13 @@ var App;
                     };
                     var errorHandler = function (source) {
                         switch (source) {
-                            case 0 /* YouTube */:
+                            case App.Source.YouTube:
                                 youtubeError = true;
                                 break;
-                            case 1 /* Twitch */:
+                            case App.Source.Twitch:
                                 twitchError = true;
                                 break;
-                            case 2 /* Cooptional */:
+                            case App.Source.Cooptional:
                                 cooptionalError = true;
                                 break;
                         }
@@ -96,11 +94,11 @@ var App;
                 var promise = new WinJS.Promise(function (resolve, reject) {
                     var success = function (videos) {
                         _this.Videos(videos.items);
-                        resolve(0 /* YouTube */);
+                        resolve(App.Source.YouTube);
                     };
                     var error = function (reason) {
                         console.log("Failed to retrieve YouTube videos. Reason: ", reason);
-                        reject(0 /* YouTube */);
+                        reject(App.Source.YouTube);
                     };
                     _this.Context.Engine.GetYouTubeVideos(10).done(success, error);
                 });
@@ -110,11 +108,11 @@ var App;
                 var promise = new WinJS.Promise(function (resolve, reject) {
                     var success = function (data) {
                         _this.TwitchIsLive(data.IsLive);
-                        resolve(1 /* Twitch */);
+                        resolve(App.Source.Twitch);
                     };
                     var error = function (reason) {
                         console.log("Failed to retrieve Twitch status. Reason: ", reason);
-                        reject(1 /* Twitch */);
+                        reject(App.Source.Twitch);
                     };
                     _this.Context.Engine.GetTwitchIsLive().done(success, error);
                 });
@@ -124,11 +122,11 @@ var App;
                 var promise = new WinJS.Promise(function (resolve, reject) {
                     var success = function (data) {
                         _this.CooptionalIsLive(data.IsLive);
-                        resolve(2 /* Cooptional */);
+                        resolve(App.Source.Cooptional);
                     };
                     var error = function (reason) {
                         console.log("Failed to retrieve Cooptional status. Reason: ", reason);
-                        reject(2 /* Cooptional */);
+                        reject(App.Source.Cooptional);
                     };
                     _this.Context.Engine.GetCooptionalIsLive().done(success, error);
                 });
@@ -153,6 +151,8 @@ var App;
                 ;
             };
             this.HandleOpenAboutPage = function (context, event) {
+                console.log("Navigating to about page.");
+                WinJS.Navigation.navigate("/pages/about/about.html", null);
             };
             this.RefreshSources();
         }
@@ -165,4 +165,3 @@ var App;
     })();
     App.HomeController = HomeController;
 })(App || (App = {}));
-//# sourceMappingURL=home.js.map

@@ -1,4 +1,5 @@
-﻿/// <reference path="libraries/custom/utilities/utilities.ts" />
+﻿/// <reference path="pages/about/about.ts" />
+/// <reference path="libraries/custom/utilities/utilities.ts" />
 /// <reference path="libraries/custom/utilities/utilities.ts" />
 /// <reference path="libraries/custom/applicationengine/applicationengine.ts" />
 /// <reference path="pages/home/home.ts" />
@@ -33,14 +34,16 @@ module App
             this.RegisterApplicationPages();
 
             //Load notifications and subscribe to changes
-            this.LoadNotificationSettings();
             this.RegisterKnockoutSubscriptions();
 
             //Check for and register background task
             this.RegisterTimerTask();
 
-            //Listen for the app to be added to the lockscreen.
-            this.RegisterLockscreenListener();
+            //Listen for the app to be added to the lockscreen. Only necessary for non-WP apps
+            if (!App.Utilities.IsPhone)
+            {
+                this.RegisterLockscreenListener();
+            }
 
             //Subscribe to changes in localstorage data. Used by the lockscreen task to signal when the app has been added.
             App.Utilities.LocalStorage.SubscribeToChanges((args) =>
@@ -108,19 +111,26 @@ module App
         {
             //All pages call ready, unload and updatelayout in the same way.
             var defaultHandlers = {
-                ready: () =>
+                ready: (newPageContainer: HTMLElement, state) =>
                 {
-                    this.PageLoadingPromise.then((pageController: App.IPage) =>
+                    this.PageLoadingPromise.then((newPageController: App.IPage) =>
                     {
-                        this.CurrentPage(pageController);
+                        WinJS.UI.processAll().then(() =>
+                        {
+                            //Clean old node
+                            if (this.CurrentPageContainer)
+                            {
+                                ko.cleanNode(this.CurrentPageContainer);
+                            };
 
-                        //Bind Knockout
-                        ko.cleanNode(document.getElementById("contenthost"));
-                        ko.applyBindings(this, document.getElementById("contenthost"));
+                            this.CurrentPageContainer = newPageContainer;
 
-                        this.CurrentPage().HandlePageReady();
+                            //Set page and bind KO to new node
+                            this.CurrentPage(newPageController);
+                            ko.applyBindings(this, newPageContainer);
 
-                        WinJS.UI.processAll();
+                            this.CurrentPage().HandlePageReady();
+                        });
                     });
                 },
                 unload: (args) =>
@@ -168,20 +178,21 @@ module App
                     });
                 }
             }));
+
+            if (App.Utilities.IsPhone)
+            {
+                //About page
+                WinJS.UI.Pages.define("/pages/about/about.html", _.extend(defaultHandlers, {
+                    processed: (e, args) =>
+                    {
+                        this.PageLoadingPromise = new WinJS.Promise<IPage>((resolve, reject) =>
+                        {
+                            App.AboutController.ProcessPage(resolve, reject, this);
+                        });
+                    }
+                }));
+            }
         }
-
-        private LoadNotificationSettings = () =>
-        {
-            var settings = this.NotificationSettings;
-            var youtube = App.Utilities.LocalStorage.Retrieve("NotifyYouTube");
-            var twitch = App.Utilities.LocalStorage.Retrieve("NotifyTwitch");
-            var cooptional = App.Utilities.LocalStorage.Retrieve("NotifyCooptional");
-            var isBoolean = (val: boolean) => typeof (val) === "boolean";
-
-            settings.NotifyYouTube(isBoolean(youtube) ? youtube : true);
-            settings.NotifyTwitch(isBoolean(twitch) ? twitch : true);
-            settings.NotifyCooptional(isBoolean(cooptional) ? cooptional : true);
-        };
 
         private RegisterKnockoutSubscriptions = () =>
         {
@@ -207,7 +218,7 @@ module App
             var timerTaskName = "backgroundSourceCheckTask";
             var background = Windows.ApplicationModel.Background;
             var packageInfo = Windows.ApplicationModel.Package.current.id.version;
-            var appVersion = `${packageInfo.build}.${packageInfo.major}.${packageInfo.minor}.${packageInfo.revision}`;
+            var appVersion = "" + packageInfo.build + "." + packageInfo.major + "." + packageInfo.minor + "." + packageInfo.revision;
             var storageKey = "AppVersion";
             var versionMismatch = App.Utilities.LocalStorage.Retrieve(storageKey) !== appVersion;
             var accessRemoved = false;
@@ -331,17 +342,25 @@ module App
 
         public CurrentPage = ko.observable<App.IPage>();
 
+        private CurrentPageContainer: HTMLElement;
+
         public Engine: App.ApplicationEngine;
 
         public StatusBar: Windows.UI.ViewManagement.StatusBar;
 
         private PageLoadingPromise: WinJS.Promise<IPage>;
 
-        public NotificationSettings = {
-            NotifyYouTube: ko.observable(true),
-            NotifyTwitch: ko.observable(true),
-            NotifyCooptional: ko.observable(true),
-        }
+        public NotificationSettings: ObservableNotificationSettings = (function ()
+        {
+            var settings = App.Utilities.GetNotificationSettings();
+            var output: ObservableNotificationSettings = {
+                NotifyYouTube: ko.observable(settings.NotifyYouTube),
+                NotifyTwitch: ko.observable(settings.NotifyTwitch),
+                NotifyCooptional: ko.observable(settings.NotifyCooptional)
+            };
+
+            return output;
+        } ());
 
         //#endregion
 

@@ -19,11 +19,10 @@ var App;
                         var video = playlist.items && playlist.items[0];
                         var storageKey = "LastYouTubeId";
                         if (video) {
-                            console.log("Video", video);
                             // Check if we've seen this video before.
                             if (App.Utilities.LocalStorage.Retrieve(storageKey) !== video.id) {
                                 output.ShouldShowToast = true;
-                                output.LaunchUrl = "https://www.youtube.com/watch/?v=" + video.snippet.resourceId.videoId;
+                                output.LaunchUrl = "https://www.youtube.com/watch?v=" + video.snippet.resourceId.videoId;
                                 output.ToastThumbnail = video.snippet.thumbnails.default.url;
                                 //Save the video's id so we don't show more toasts for it in the future. 
                                 App.Utilities.LocalStorage.Save(storageKey, video.id);
@@ -118,6 +117,7 @@ var App;
             var _this = this;
             // Create a generic 'done' handler for the three sources.
             // Once they all report done we can close the task.
+            var settings = App.Utilities.GetNotificationSettings();
             var youtubeResult;
             var twitchResult;
             var cooptionalResult;
@@ -134,15 +134,27 @@ var App;
                         break;
                 }
                 if (youtubeResult && twitchResult && cooptionalResult) {
-                    //Check if we need to show a toast. Twitch > Cooptional > Youtube
-                    if (cooptionalResult.ShouldShowToast) {
-                        YeahToast.show({ title: "The Co-Optional Podcast is live on Twitch!", launchString: cooptionalResult.LaunchUrl, imgsrc: cooptionalResult.ToastThumbnail });
+                    //Check if we need to show a toast. Twitch > Cooptional > Youtube. Cannot show images in toasts on WP.
+                    if (cooptionalResult.ShouldShowToast && settings.NotifyCooptional) {
+                        YeahToast.show({
+                            title: "The Co-Optional Podcast is live on Twitch!",
+                            launchString: cooptionalResult.LaunchUrl,
+                            imgsrc: App.Utilities.IsPhone ? null : cooptionalResult.ToastThumbnail
+                        });
                     }
-                    else if (twitchResult.ShouldShowToast) {
-                        YeahToast.show({ title: "Jesse Cox is live on Twitch!", launchString: twitchResult.LaunchUrl, imgsrc: twitchResult.ToastThumbnail });
+                    else if (twitchResult.ShouldShowToast && settings.NotifyTwitch) {
+                        YeahToast.show({
+                            title: "Jesse Cox is live on Twitch!",
+                            launchString: twitchResult.LaunchUrl,
+                            imgsrc: App.Utilities.IsPhone ? null : twitchResult.ToastThumbnail
+                        });
                     }
-                    else if (youtubeResult.ShouldShowToast) {
-                        YeahToast.show({ title: "Jesse Cox has uploaded a new video!", launchString: youtubeResult.LaunchUrl, imgsrc: youtubeResult.ToastThumbnail });
+                    else if (youtubeResult.ShouldShowToast && settings.NotifyYouTube) {
+                        YeahToast.show({
+                            title: "Jesse Cox has uploaded a new video!",
+                            launchString: youtubeResult.LaunchUrl,
+                            imgsrc: App.Utilities.IsPhone ? null : youtubeResult.ToastThumbnail
+                        });
                     }
                     ;
                     // Finally, close the task.

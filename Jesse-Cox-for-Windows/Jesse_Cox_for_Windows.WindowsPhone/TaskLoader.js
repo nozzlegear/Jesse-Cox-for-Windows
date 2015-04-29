@@ -8,4 +8,4 @@
     };
 
     var task = new App.TimerTaskController(closeTask);
-});
+}());

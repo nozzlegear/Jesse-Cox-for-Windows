@@ -53,6 +53,20 @@ var App;
             }
         };
         //#endregion
+        //#region Notification Settings
+        Utilities.GetNotificationSettings = function () {
+            var youtube = Utilities.LocalStorage.Retrieve("NotifyYouTube");
+            var twitch = Utilities.LocalStorage.Retrieve("NotifyTwitch");
+            var cooptional = Utilities.LocalStorage.Retrieve("NotifyCooptional");
+            var isBoolean = function (val) { return typeof (val) === "boolean"; };
+            var output = {
+                NotifyYouTube: isBoolean(youtube) ? youtube : true,
+                NotifyTwitch: isBoolean(twitch) ? twitch : true,
+                NotifyCooptional: isBoolean(cooptional) ? cooptional : true
+            };
+            return output;
+        };
+        //#endregion
         Utilities.GetAppSetting = function (key) {
             return WinJS.Resources.getString("AppSettings.private/" + key).value;
         };

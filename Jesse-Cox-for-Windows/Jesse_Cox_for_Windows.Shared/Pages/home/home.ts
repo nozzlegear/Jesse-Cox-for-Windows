@@ -36,16 +36,12 @@ module App
 
         public HandlePageUpdateLayout = (element: any, args: any) =>
         {
-            console.log("Updating");
-
             this.Context.IsNarrowViewport(this.Context.CheckIfNarrowViewport());
         }
 
         //#region Variables
 
         //#region Objects and array
-
-        // ListView
 
         public Videos = ko.observableArray<YouTube.Playlist.Item>([]);
 
@@ -236,7 +232,8 @@ module App
 
         public HandleOpenAboutPage = (context, event) =>
         {
-
+            console.log("Navigating to about page.");
+            WinJS.Navigation.navigate("/pages/about/about.html", null)
         };
 
         //#endregion

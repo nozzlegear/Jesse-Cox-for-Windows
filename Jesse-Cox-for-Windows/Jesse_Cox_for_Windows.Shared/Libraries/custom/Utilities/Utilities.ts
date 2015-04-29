@@ -77,6 +77,25 @@ module App
 
         //#endregion
 
+        //#region Notification Settings
+
+        static GetNotificationSettings: () => NotificationSettings = () =>
+        {
+            var youtube = Utilities.LocalStorage.Retrieve("NotifyYouTube");
+            var twitch = Utilities.LocalStorage.Retrieve("NotifyTwitch");
+            var cooptional = Utilities.LocalStorage.Retrieve("NotifyCooptional");
+            var isBoolean = (val: boolean) => typeof (val) === "boolean";
+            var output: NotificationSettings = {
+                NotifyYouTube: isBoolean(youtube) ? youtube : true,
+                NotifyTwitch: isBoolean(twitch) ? twitch : true,
+                NotifyCooptional: isBoolean(cooptional) ? cooptional : true,
+            };
+            
+            return output;
+        };
+
+        //#endregion
+
         static GetAppSetting = (key: string) =>
         {
             return WinJS.Resources.getString("AppSettings.private/" + key).value;
