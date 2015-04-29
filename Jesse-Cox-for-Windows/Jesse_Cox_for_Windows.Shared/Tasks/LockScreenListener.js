@@ -1,4 +1,4 @@
-// # # #
+﻿// # # #
 // ȗțӻ⁸ Marker - DO NOT REMOVE - forces TypeScript to output files as UTF-8.
 // # # #
 var IsPhone = false;

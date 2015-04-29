@@ -1,4 +1,4 @@
-/// <reference path="libraries/custom/utilities/utilities.ts" />
+﻿/// <reference path="libraries/custom/utilities/utilities.ts" />
 /// <reference path="libraries/custom/utilities/utilities.ts" />
 /// <reference path="libraries/custom/applicationengine/applicationengine.ts" />
 /// <reference path="pages/home/home.ts" />

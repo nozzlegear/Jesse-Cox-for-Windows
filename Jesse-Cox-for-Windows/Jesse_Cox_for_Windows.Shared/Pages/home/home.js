@@ -1,4 +1,4 @@
-/// <reference path="../../default.ts" />
+﻿/// <reference path="../../default.ts" />
 /// <reference path="../../typings/custom/ipage.d.ts" />
 /// <reference path="../../typings/knockout/knockout.d.ts" />
 /// <reference path="../../typings/winjs/winjs.d.ts" />

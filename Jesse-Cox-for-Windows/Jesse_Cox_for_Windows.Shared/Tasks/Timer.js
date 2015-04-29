@@ -1,4 +1,4 @@
-/// <reference path="../libraries/custom/applicationengine/applicationengine.ts" />
+﻿/// <reference path="../libraries/custom/applicationengine/applicationengine.ts" />
 var App;
 (function (App) {
     var SourceCheckResult = (function () {

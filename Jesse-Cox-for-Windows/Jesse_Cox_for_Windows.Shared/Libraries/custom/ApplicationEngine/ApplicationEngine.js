@@ -1,4 +1,4 @@
-/// <reference path="../../../typings/custom/app.d.ts" />
+﻿/// <reference path="../../../typings/custom/app.d.ts" />
 /// <reference path="../../../typings/custom/twitch.response.d.ts" />
 /// <reference path="../../../typings/winrt/winrt.d.ts" />
 var App;
