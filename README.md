@@ -15,7 +15,21 @@ A lightweight Windows and Windows Phone app built with native TypeScript, WinJS 
 
 This project has been rewritten from XAML and C# to HTML and JavaScript using WinJS. "But wait,"  you might say, "isn't javascript slow, bad and stupid?". Nope! Personally, I'm a big fan of using JavaScript when it's written with type safety using TypeScript. On top of that, WinJS apps (those written in HTML and JavaScript) are supported natively on the Windows, Windows Phone and Xbox platforms. These apps aren't web wrappers, which means they are just as performant as C# and XAML apps. 
 
+=====================
+
+**Building and compiling the project.**
+
 If you want to compile this project, you'll need to install NPM, Bower, Grunt and TypeScript@1.4.1. If you have NPM installed, just change directory to this project in your terminal and install all of the required tools with `npm install`.
+
+Once you've installed the tools, you'll need to create the `AppSettings.private.resjson` file inside `Jesse-Cox-for-Windows/Jesse_Cox_for_Windows.Shared/`. This file holds private app settings and API keys which should not and are not stored in source control. Right now the only app setting you'll need is a YouTube API V3 key, which you can get from [your Google developer console](https://console.developers.google.com).
+
+Here's what your `AppSettings.private.resjson` file should look like:
+
+```
+{
+  "YouTubeApiKey" : "myApiKey"
+}
+```
 
 =====================
 
