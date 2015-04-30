@@ -1,3 +1,4 @@
+﻿/// <reference path="pages/settings/settings.ts" />
 /// <reference path="pages/about/about.ts" />
 /// <reference path="libraries/custom/utilities/utilities.ts" />
 /// <reference path="libraries/custom/utilities/utilities.ts" />
@@ -32,8 +33,8 @@ var App;
                 // Populate Settings pane and tie commands to Settings flyouts.
                 WinJS.Application.onsettings = function (e) {
                     e.detail.applicationcommands = {
-                        "settingsPane": { href: "/pages/settings/settings.html", title: "General Settings" },
-                        "aboutPane": { href: "/pages/settings/about.html", title: "About" },
+                        "settingsPane": { href: "/pages/win8-settings/settings.html", title: "General Settings" },
+                        "aboutPane": { href: "/pages/win8-settings/about.html", title: "About" }
                     };
                     WinJS.UI.SettingsFlyout.populateSettings(e);
                 };
@@ -283,7 +284,7 @@ var App;
                     if (currentPage && currentPage.HandlePageUpdateLayout) {
                         _this.CurrentPage().HandlePageUpdateLayout(el, args);
                     }
-                },
+                }
             };
             //Automatically call the page's updateLayout when the window is resized
             var resizeDebouncer;
@@ -315,6 +316,14 @@ var App;
                         });
                     }
                 }));
+                //Settings page
+                WinJS.UI.Pages.define("/pages/settings/settings.html", _.extend(defaultHandlers, {
+                    processed: function (e, args) {
+                        _this.PageLoadingPromise = new WinJS.Promise(function (resolve, reject) {
+                            App.SettingsController.ProcessPage(resolve, reject, _this);
+                        });
+                    }
+                }));
             }
         };
         return Context;
@@ -323,3 +332,4 @@ var App;
 })(App || (App = {}));
 //Your tax dollars at work!
 var context = new App.Context();
+//# sourceMappingURL=default.js.map

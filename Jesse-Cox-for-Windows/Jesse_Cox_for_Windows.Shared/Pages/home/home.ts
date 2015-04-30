@@ -222,7 +222,7 @@ module App
         {
             if (App.Utilities.IsPhone)
             {
-                // TODO: Open phone-specific settings page.
+                WinJS.Navigation.navigate("/pages/settings/settings.html", null)
             }
             else
             {
@@ -232,7 +232,6 @@ module App
 
         public HandleOpenAboutPage = (context, event) =>
         {
-            console.log("Navigating to about page.");
             WinJS.Navigation.navigate("/pages/about/about.html", null)
         };
 

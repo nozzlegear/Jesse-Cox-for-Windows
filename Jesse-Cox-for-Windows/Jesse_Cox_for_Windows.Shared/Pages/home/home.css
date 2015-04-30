@@ -116,12 +116,6 @@
     }
 }
 
-@media (max-width:600px) {
-    .win-listview ._win-dynamic-containersize-0 .win-container {
-        height:auto;
-    }
-}
-
 /*
     # # #
     TODO: Use .phone to make the page responsive.

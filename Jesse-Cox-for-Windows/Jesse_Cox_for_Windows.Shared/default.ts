@@ -1,4 +1,5 @@
-﻿/// <reference path="pages/about/about.ts" />
+﻿/// <reference path="pages/settings/settings.ts" />
+/// <reference path="pages/about/about.ts" />
 /// <reference path="libraries/custom/utilities/utilities.ts" />
 /// <reference path="libraries/custom/utilities/utilities.ts" />
 /// <reference path="libraries/custom/applicationengine/applicationengine.ts" />
@@ -99,8 +100,8 @@ module App
             WinJS.Application.onsettings = function (e)
             {
                 e.detail.applicationcommands = {
-                    "settingsPane": { href: "/pages/settings/settings.html", title: "General Settings" },
-                    "aboutPane": { href: "/pages/settings/about.html", title: "About" },
+                    "settingsPane": { href: "/pages/win8-settings/settings.html", title: "General Settings" },
+                    "aboutPane": { href: "/pages/win8-settings/about.html", title: "About" },
                 };
 
                 WinJS.UI.SettingsFlyout.populateSettings(e);
@@ -188,6 +189,17 @@ module App
                         this.PageLoadingPromise = new WinJS.Promise<IPage>((resolve, reject) =>
                         {
                             App.AboutController.ProcessPage(resolve, reject, this);
+                        });
+                    }
+                }));
+
+                //Settings page
+                WinJS.UI.Pages.define("/pages/settings/settings.html", _.extend(defaultHandlers, {
+                    processed: (e, args) =>
+                    {
+                        this.PageLoadingPromise = new WinJS.Promise<IPage>((resolve, reject) =>
+                        {
+                            App.SettingsController.ProcessPage(resolve, reject, this);
                         });
                     }
                 }));

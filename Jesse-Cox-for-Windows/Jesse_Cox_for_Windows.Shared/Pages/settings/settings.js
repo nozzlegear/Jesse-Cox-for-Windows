@@ -8,8 +8,8 @@
 // # # #
 var App;
 (function (App) {
-    var AboutController = (function () {
-        function AboutController(Context) {
+    var SettingsController = (function () {
+        function SettingsController(Context) {
             var _this = this;
             this.Context = Context;
             this.HandlePageReady = function () {
@@ -24,13 +24,13 @@ var App;
             //#region Variables
             this.PageIsReady = ko.observable(false);
         }
-        AboutController.ProcessPage = function (resolve, reject, context) {
+        SettingsController.ProcessPage = function (resolve, reject, context) {
             // Using promises (resolve and reject) gives us a chance to asynchronously load any dependencies via requirejs, 
             // or even make a webrequest before loading the page.
-            resolve(new AboutController(context));
+            resolve(new SettingsController(context));
         };
-        return AboutController;
+        return SettingsController;
     })();
-    App.AboutController = AboutController;
+    App.SettingsController = SettingsController;
 })(App || (App = {}));
-//# sourceMappingURL=about.js.map
+//# sourceMappingURL=settings.js.map
