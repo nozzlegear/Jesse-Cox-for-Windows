@@ -17,8 +17,6 @@ This project has been rewritten from XAML and C# to HTML and JavaScript using Wi
 
 If you want to compile this project, you'll need to install NPM, Bower, Grunt and TypeScript@1.4.1. If you have NPM installed, just change directory to this project in your terminal and install all of the required tools with `npm install`.
 
-**Note:** This current release works on Windows 8.1 and Windows 10, but the Windows Phone version isn't quite ready. This message will be removed when it is.
-
 =====================
 
 **TODO**:
