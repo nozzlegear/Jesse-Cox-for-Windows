@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest" xmlns:m3="http://schemas.microsoft.com/appx/2014/manifest" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest">
-  <Identity Name="f247f76b-59de-49f4-929d-dcf24d0904e1" Version="1.0.0.0" Publisher="CN=Joshua Harms" />
-  <mp:PhoneIdentity PhoneProductId="f247f76b-59de-49f4-929d-dcf24d0904e1" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
+  <Identity Name="11272Kingbird.JesseCoxforWindows" Version="2.0.0.0" Publisher="CN=47958F3E-04D3-4EFC-B249-2D204C942350" />
+  <mp:PhoneIdentity PhoneProductId="424ed0a0-1230-4d17-b4cb-3ba9783fcab6" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
-    <DisplayName>Jesse_Cox_for_Windows.WindowsPhone</DisplayName>
-    <PublisherDisplayName>Joshua Harms</PublisherDisplayName>
+    <DisplayName>Jesse Cox for Windows</DisplayName>
+    <PublisherDisplayName>Async Build</PublisherDisplayName>
     <Logo>images\StoreLogo.png</Logo>
   </Properties>
   <Prerequisites>

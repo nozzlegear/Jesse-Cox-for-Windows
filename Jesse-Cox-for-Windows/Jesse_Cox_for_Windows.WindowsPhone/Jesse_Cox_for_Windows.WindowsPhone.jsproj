@@ -45,6 +45,9 @@
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\$(WMSJSProjectDirectory)\Microsoft.VisualStudio.$(WMSJSProject).props" />
   <PropertyGroup>
     <DefaultLanguage>en-US</DefaultLanguage>
+    <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
+    <AppxBundle>Always</AppxBundle>
+    <AppxBundlePlatforms>neutral</AppxBundlePlatforms>
   </PropertyGroup>
   <ItemGroup>
     <AppxManifest Include="package.appxmanifest">
@@ -102,6 +105,8 @@
     <Content Include="default.html" />
     <Content Include="images\Square150x150Logo.scale-240.png" />
     <Content Include="images\Square44x44Logo.scale-240.png" />
+    <Content Include="images\StoreLogo.scale-100.png" />
+    <Content Include="images\StoreLogo.scale-140.png" />
     <Content Include="images\Wide310x150Logo.scale-240.png" />
     <Content Include="images\Square71x71Logo.scale-240.png" />
     <Content Include="images\SplashScreen.scale-240.png" />
@@ -110,6 +115,7 @@
     <Content Include="css\ui-themed.css" />
     <Content Include="css\ui-themed.theme-dark.css" />
     <Content Include="css\ui-themed.theme-light.css" />
+    <None Include="Package.StoreAssociation.xml" />
     <Content Include="TaskLoader.js" />
   </ItemGroup>
   <ItemGroup>
