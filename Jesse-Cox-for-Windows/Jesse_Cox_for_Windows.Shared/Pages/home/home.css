@@ -2,8 +2,8 @@
 }
 
     .yt-thumbnail > img {
-        min-height:360px;
-        min-width:480px;
+        min-height: 360px;
+        min-width: 480px;
         max-height: 360px;
         max-width: 480px;
     }
@@ -26,6 +26,19 @@
         .yt-thumbnail .info.bottom {
             bottom: 4px;
         }
+
+.flexbox-centered {
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    align-items:center;
+    font-size:13pt;
+}
+
+img.img-responsive{
+    max-width:100%;
+    max-height:100%;
+}
 
 .black-transparent-bg {
     background: rgba(25, 25, 25, .7);
@@ -77,9 +90,9 @@
         margin: auto 10px;
     }
 
-    .win-listview > .win-vertical .win-container, 
-    .win-listview > .win-vertical .win-container.win-itemcontainer{
-        margin-bottom:30px;
+    .win-listview > .win-vertical .win-container,
+    .win-listview > .win-vertical .win-container.win-itemcontainer {
+        margin-bottom: 30px;
     }
 
     .yt-thumbnail {
@@ -110,9 +123,9 @@
     }
 
     .home header > .titlearea {
-        font-size:36pt;
-        -ms-grid-column-span:2;
-        text-align:center;
+        font-size: 36pt;
+        -ms-grid-column-span: 2;
+        text-align: center;
     }
 }
 
@@ -127,7 +140,7 @@
 }
 
 .phone .home .page-header .titlearea {
-    margin:0;
+    margin: 0;
     font-size: 28pt;
 }
 
@@ -135,7 +148,7 @@
     display: none;
 }
 
-.phone button.win-command .win-label{
+.phone button.win-command .win-label {
     /*AppBar is purple, but phone may be using a dark theme with dark appbar buttons. Force them to white.*/
-    color:#fff;
+    color: #fff;
 }

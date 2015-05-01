@@ -20,6 +20,7 @@
     <Content Include="$(MSBuildThisFileDirectory)Images\Icons\soundcloud_icon.png" />
     <Content Include="$(MSBuildThisFileDirectory)Images\Icons\twitter_icon.png" />
     <Content Include="$(MSBuildThisFileDirectory)Images\live-now.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Images\no-connection.png" />
     <Content Include="$(MSBuildThisFileDirectory)Libraries\custom\ApplicationEngine\ApplicationEngine.js" />
     <Content Include="$(MSBuildThisFileDirectory)Libraries\custom\ApplicationEngine\ApplicationEngine.js.map" />
     <Content Include="$(MSBuildThisFileDirectory)default.js" />

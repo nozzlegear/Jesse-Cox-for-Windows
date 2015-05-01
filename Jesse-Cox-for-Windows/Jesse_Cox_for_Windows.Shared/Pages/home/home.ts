@@ -57,85 +57,114 @@ module App
 
         public CooptionalIsLive = ko.observable(false);
 
+        public IsDisconnected = ko.observable(false);
+
         //#endregion
 
         //#endregion
 
         //#region Utility functions
 
+        private CloseAppBars = () =>
+        {
+            //Close app bars
+            var topAppBar = document.getElementById("topAppBar");
+            var bottomAppBar = document.getElementById("bottomAppBar");
+
+            if (topAppBar && topAppBar.winControl)
+            {
+                topAppBar.winControl.hide();
+            };
+
+            if (bottomAppBar && bottomAppBar.winControl)
+            {
+                bottomAppBar.winControl.hide();
+            };
+        };
+
+        private HasInternetConnection = () =>
+        {
+            var connection = Windows.Networking.Connectivity.NetworkInformation.getInternetConnectionProfile();
+            var level = Windows.Networking.Connectivity.NetworkConnectivityLevel;
+
+            return connection && (connection.getNetworkConnectivityLevel() === level.internetAccess);
+        };
+
         public RefreshSources = () =>
         {
+            this.CloseAppBars();
+
             if (!this.IsRefreshingSources())
             {
                 this.IsRefreshingSources(true);
 
-                //Close app bars
-                var topAppBar = document.getElementById("topAppBar");
-                var bottomAppBar = document.getElementById("bottomAppBar");
-
-                if (topAppBar && topAppBar.winControl)
+                if (!this.HasInternetConnection())
                 {
-                    topAppBar.winControl.hide();
-                };
+                    //We do this after the flag was set to true, because retrieving connection status can take a few moments.
+                    this.IsRefreshingSources(false);
+                    this.IsDisconnected(true);
 
-                if (bottomAppBar && bottomAppBar.winControl)
+                    var dialog = new Windows.UI.Popups.MessageDialog("It looks like your phone can't connect to the internet! Jesse Cox for Windows was unable to retrieve the latest videos and Twitch streams.", "No internet access.");
+                    dialog.showAsync();
+                }
+                else
                 {
-                    bottomAppBar.winControl.hide();
-                };
+                    this.IsDisconnected(false);
 
-                // Create a generic 'done' handler for the three sources.
-                // Once they all report done we can hide the overlay.
-                var youtubeDone = false, youtubeError = false;
-                var twitchDone = false, twitchError = false;
-                var cooptionalDone = false, cooptionalError = false;
-                var doneHandler = (source: Source) =>
-                {
-                    switch (source)
+                    // Create a generic 'done' handler for the three sources.
+                    // Once they all report done we can hide the overlay.
+                    var youtubeDone = false, youtubeError = false;
+                    var twitchDone = false, twitchError = false;
+                    var cooptionalDone = false, cooptionalError = false;
+                    var doneHandler = (source: Source) =>
                     {
-                        case App.Source.YouTube:
-                            youtubeDone = true;
-                            break;
+                        switch (source)
+                        {
+                            case App.Source.YouTube:
+                                youtubeDone = true;
+                                break;
 
-                        case App.Source.Twitch:
-                            twitchDone = true;
-                            break;
+                            case App.Source.Twitch:
+                                twitchDone = true;
+                                break;
 
-                        case App.Source.Cooptional:
-                            cooptionalDone = true;
-                            break;
-                    }
+                            case App.Source.Cooptional:
+                                cooptionalDone = true;
+                                break;
+                        }
 
-                    if (youtubeDone && twitchDone && cooptionalDone)
-                    {
-                        this.IsRefreshingSources(false);
+                        if (youtubeDone && twitchDone && cooptionalDone)
+                        {
+                            this.IsRefreshingSources(false);
                         
-                        // TODO: If errors, show a message dialog.
+                            // TODO: If errors, show a message dialog.
+                        };
                     };
-                };
-                var errorHandler = (source: Source) =>
-                {
-                    switch (source)
+                    var errorHandler = (source: Source) =>
                     {
-                        case App.Source.YouTube:
-                            youtubeError = true;
-                            break;
+                        switch (source)
+                        {
+                            case App.Source.YouTube:
+                                youtubeError = true;
+                                break;
 
-                        case App.Source.Twitch:
-                            twitchError = true;
-                            break;
+                            case App.Source.Twitch:
+                                twitchError = true;
+                                break;
 
-                        case App.Source.Cooptional:
-                            cooptionalError = true;
-                            break;
-                    }
+                            case App.Source.Cooptional:
+                                cooptionalError = true;
+                                break;
+                        }
 
-                    //Always invoke the doneHandler to clear the overlay
-                    doneHandler(source);
+                        //Always invoke the doneHandler to clear the overlay
+                        doneHandler(source);
+                    };
+
+                    this.RefreshYouTubeVideos().done(doneHandler, errorHandler);
+                    this.RefreshTwitch().done(doneHandler, errorHandler);
+                    this.RefreshCooptional().done(doneHandler, errorHandler);
                 };
-
-                this.RefreshYouTubeVideos().done(doneHandler, errorHandler);
-                this.RefreshTwitch().done(doneHandler, errorHandler);
-                this.RefreshCooptional().done(doneHandler, errorHandler);
             };
         };
 
